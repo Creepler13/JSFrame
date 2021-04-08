@@ -53,7 +53,7 @@ module.exports = class Server {
       if (split[0].startsWith("mouse"))
         this.Events[split[0]]({ x: split[1], y: split[2] });
       if (split[0].startsWith("key"))
-        this.Events[split[0]]({ keyCode: split[1], key: split[2] });
+        this.Events[split[0]]({ keyCode: parseInt(split[1]), key: split[2] });
     }
     switch (split[0]) {
       case "closed":

@@ -63,7 +63,7 @@ frame.on("closed",()=>{
 
 ### KeyEvents
 ```javascript
-//example output : {keyCode:65, key:a}
+//example output : {keyCode:65, key:"a"}
 
 frame.on("keyPressed", e=>{
   console.log(e)
