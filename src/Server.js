@@ -12,7 +12,7 @@ module.exports = class Server {
     server.on("listening", () => {
       this.ls = spawn("java", [
         "-jar",
-        "node_modules/jsframe.jar/src/JSFrame.jar",
+        __dirname + "/JSFrame.jar",
         server.address().port,
         this.bufferSize,
         this.width,
