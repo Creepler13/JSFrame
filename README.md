@@ -76,7 +76,7 @@ frame.on("keyReleased", e=>{
 
 ### MouseEvents
 ```javascript
-//example output : {keyCode:100, key:100}
+//example output : {x:100, y:100}
 
 frame.on("mousePressed", e=>{
   console.log(e)
