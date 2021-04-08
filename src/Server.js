@@ -3,8 +3,7 @@ const dgram = require("dgram");
 const server = dgram.createSocket("udp4");
 
 module.exports = class Server {
-  constructor(width, height, frame) {
-    this.frame = frame;
+  constructor(width, height, canvas) {
     this.width = width ? width : 500;
     this.height = height ? height : 500;
     this.bufferSize = 15000;
@@ -38,7 +37,7 @@ module.exports = class Server {
 
     server.on("connect", () => {
       this.interval = setInterval(() => {
-        this.write(this.frame.canvas.toBuffer());
+        this.write(canvas.toBuffer());
       }, 16);
       if (this.Events.ready) this.Events.ready();
     });
