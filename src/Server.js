@@ -24,11 +24,11 @@ module.exports = class Server {
       });
 
       this.ls.stderr.on("data", (data) => {
-        console.error(""+data);
+        console.error("" + data);
       });
 
       this.ls.on("error", (error) => {
-        console.error(""+error);
+        console.error("" + error);
       });
     });
 
@@ -51,7 +51,7 @@ module.exports = class Server {
     let split = (data + "").trim().split(",");
     if (this.Events[split[0]]) {
       if (split[0].startsWith("mouse"))
-        this.Events[split[0]]({ x: split[1], y: split[2] });
+        this.Events[split[0]]({ x: parseInt(split[1]), y: parseInt(split[2]) });
       if (split[0].startsWith("key"))
         this.Events[split[0]]({ keyCode: parseInt(split[1]), key: split[2] });
     }
