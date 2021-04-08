@@ -3,13 +3,11 @@ const dgram = require("dgram");
 const server = dgram.createSocket("udp4");
 
 module.exports = class Server {
-  constructor(port, width, height, bufferSize, frame, startet) {
+  constructor(width, height, frame) {
     this.frame = frame;
-    this.startet = startet;
-    this.port = port ? port : 8080;
     this.width = width ? width : 500;
     this.height = height ? height : 500;
-    this.bufferSize = bufferSize ? bufferSize : 15000;
+    this.bufferSize = 15000;
 
     server.on("listening", () => {
       this.ls = spawn("java", [
@@ -26,54 +24,51 @@ module.exports = class Server {
       });
 
       this.ls.stderr.on("data", (data) => {
-        console.log(`stderr: ${data}`);
+        console.error(""+data);
       });
 
       this.ls.on("error", (error) => {
-        console.log(`error: ${error.message}`);
+        console.error(""+error);
       });
     });
 
     server.on("message", (msg, rinfo) => {
-      if (rinfo.port != this.port) this.message(msg);
+      if (rinfo.port != server.address().port) this.message(msg);
     });
 
     server.on("connect", () => {
-      this.startet();
-      if (this.KEvents.ready) this.KEvents.ready();
+      this.interval = setInterval(() => {
+        this.write(this.frame.canvas.toBuffer());
+      }, 16);
+      if (this.Events.ready) this.Events.ready();
     });
 
     server.bind();
   }
 
-  MEvents = {};
-  KEvents = {};
+  Events = {};
   message(data) {
     let split = (data + "").trim().split(",");
-    if (this.KEvents[split[0]]) {
-      this.KEvents[split[0]]({ keyCode: split[1], key: split[2] });
-    } else if (this.MEvents[split[0]]) {
-      this.MEvents[split[0]]({ x: split[1], y: split[2] });
-    } else {
-      switch (split[0]) {
-        case "closed":
-          clearInterval(this.frame.interval);
-          this.ls.kill();
-          this.kill();
-          if (this.KEvents.closed) this.KEvents.closed();
-          break;
-        case "port":
-          server.connect(parseInt(split[1]));
-          break;
-      }
+    if (this.Events[split[0]]) {
+      if (split[0].startsWith("mouse"))
+        this.Events[split[0]]({ x: split[1], y: split[2] });
+      if (split[0].startsWith("key"))
+        this.Events[split[0]]({ keyCode: split[1], key: split[2] });
+    }
+    switch (split[0]) {
+      case "closed":
+        clearInterval(this.interval);
+        this.ls.kill();
+        server.close();
+        if (this.Events.closed) this.Events.closed();
+        break;
+      case "port":
+        server.connect(parseInt(split[1]));
+        break;
     }
   }
 
   write(buffer, callBack) {
     server.send(buffer, this.port);
-  }
-
-  kill() {
-    server.close();
   }
 };

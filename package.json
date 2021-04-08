@@ -1,13 +1,25 @@
 {
   "name": "jsframe.jar",
-  "version": "1.0.2",
+  "version": "1.0.10",
   "description": "",
   "main": "src/JSFrame.js",
-  
   "author": "Creepler13",
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.7.0",
     "child_process": "^1.0.2"
-  }
+  },
+  "scripts": {
+    "postinstall": "node javaI.js"
+  },
+  "keywords": [
+    "jsframe",
+    "jframe",
+    "java",
+    "canvas",
+    "graphic",
+    "graphics",
+    "window",
+    "frame"
+  ]
 }
