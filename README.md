@@ -41,17 +41,17 @@ setInterval(() => {
 
 ### Methods
 
-- [JSFrame#getCanvas](#JSFrame#getCanvas)
-- [JSFrame#getWidth](#JSFrame#getWidth/Height)
-- [JSFrame#getHeight](#JSFrame#getWidth/Height)
+- [JSFrame#getCanvas](#getcanvas)
+- [JSFrame#getWidth](#getwidthheight)
+- [JSFrame#getHeight](#getwidthheight)
 
 ### Events
 
-- [FrameEvents](#FrameEvents)
-- [KeyEvents](#KeyEvents)
-- [MouseEvents](#MouseEvents)
+- [FrameEvents](#frameevents)
+- [KeyEvents](#keyevents)
+- [MouseEvents](#mouseevents)
 
-### JSFrame#getCanvas
+### getCanvas()
 
 ```javascript
 const JSFrame = require("jsframe.jar");
@@ -63,7 +63,7 @@ let canvas = frame.getCanvas();
 
 Returns a [Canvas](https://www.npmjs.com/package/canvas) object which behaves like a html canvas
 
-### JSFrame#getWidth/Height
+### getWidth/Height()
 
 ```javascript
 const JSFrame = require("jsframe.jar");
