@@ -50,7 +50,7 @@ module.exports = class Server {
     let split = (data + "").trim().split(",");
     if (this.Events[split[0]]) {
       if (split[0].startsWith("mouse"))
-        this.Events[split[0]]({ x: parseInt(split[1]), y: parseInt(split[2]) });
+        this.Events[split[0]]({ x: parseInt(split[1]), y: parseInt(split[2]),button :split[3]?parseInt(split[3]):0 });
       if (split[0].startsWith("key"))
         this.Events[split[0]]({ keyCode: parseInt(split[1]), key: split[2] });
     }

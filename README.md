@@ -85,7 +85,7 @@ frame.on("closed", () => {});
 ### KeyEvents
 
 ```javascript
-//example output : {keyCode:65, key:"a"}
+//example output : { keyCode: 65, key: "a" }
 
 frame.on("keyPressed", (e) => {
   console.log(e);
@@ -99,7 +99,11 @@ frame.on("keyReleased", (e) => {
 ### MouseEvents
 
 ```javascript
-//example output : {x:100, y:100}
+//example output : { x: 100, y: 100, button: 1 }
+// button = 0 (no button used)
+// button = 1 (left-click)
+// button = 2 (mouse-wheel)
+// button = 3 (right-click)
 
 frame.on("mousePressed", (e) => {
   console.log(e);
