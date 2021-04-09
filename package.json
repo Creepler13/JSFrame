@@ -1,13 +1,14 @@
 {
   "name": "jsframe.jar",
-  "version": "1.0.19",
-  "description": "",
+  "version": "1.0.20",
+  "description": "JSFrame is a easy way to display something with nodejs, without the need of a browser",
   "main": "src/JSFrame.js",
   "author": "Creepler13",
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.7.0",
-    "child_process": "^1.0.2"
+    "child_process": "^1.0.2",
+    "fs": "*"
   },
   "scripts": {
     "postinstall": "node javaI.js"

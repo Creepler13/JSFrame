@@ -1,12 +1,14 @@
 const { spawn } = require("child_process");
+const config = require("./config.json");
 const dgram = require("dgram");
+const fs = require("fs");
 const server = dgram.createSocket("udp4");
 
 module.exports = class Server {
   constructor(width, height, canvas) {
     this.width = width ? width : 500;
     this.height = height ? height : 500;
-    this.bufferSize = 15000;
+    this.bufferSize = config.buffersize;
 
     server.on("listening", () => {
       this.ls = spawn("java", [
@@ -50,7 +52,11 @@ module.exports = class Server {
     let split = (data + "").trim().split(",");
     if (this.Events[split[0]]) {
       if (split[0].startsWith("mouse"))
-        this.Events[split[0]]({ x: parseInt(split[1]), y: parseInt(split[2]),button :split[3]?parseInt(split[3]):0 });
+        this.Events[split[0]]({
+          x: parseInt(split[1]),
+          y: parseInt(split[2]),
+          button: split[3] ? parseInt(split[3]) : 0,
+        });
       if (split[0].startsWith("key"))
         this.Events[split[0]]({ keyCode: parseInt(split[1]), key: split[2] });
     }
@@ -63,6 +69,10 @@ module.exports = class Server {
         break;
       case "port":
         server.connect(parseInt(split[1]));
+        break;
+      case "bufferfix":
+        config.buffersize = parseInt(split[1]);
+        fs.writeFileSync(__dirname + "/config.json", JSON.stringify(config));
         break;
     }
   }
