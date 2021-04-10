@@ -10,8 +10,11 @@
     "child_process": "^1.0.2",
     "fs": "*"
   },
+  "files": [
+    "src/"
+  ],
   "scripts": {
-    "postinstall": "node javaI.js"
+    "postinstall": "node src/javaI.js"
   },
   "repository": "https://github.com/Creepler13/JSFrame.git",
   "keywords": [
