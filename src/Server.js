@@ -39,7 +39,7 @@ module.exports = class Server {
 
     server.on("connect", () => {
       this.interval = setInterval(() => {
-        this.write(canvas.toBuffer());
+        this.writeImg(canvas.toBuffer());
       }, 16);
       if (this.Events.ready) this.Events.ready();
     });
@@ -50,6 +50,7 @@ module.exports = class Server {
   Events = {};
   message(data) {
     let split = (data + "").trim().split(",");
+    if (split[0].startsWith("key")) this.write(data + "");
     if (this.Events[split[0]]) {
       if (split[0].startsWith("mouse"))
         this.Events[split[0]]({
@@ -77,7 +78,14 @@ module.exports = class Server {
     }
   }
 
-  write(buffer, callBack) {
-    server.send(buffer, this.port);
+  writeImg(buffer) {
+    server.send(Buffer.concat([Buffer.from([0]), buffer]), this.port);
+  }
+
+  write(msg) {
+    server.send(
+      Buffer.concat([Buffer.from([1]), Buffer.from(msg), Buffer.from(";")]),
+      this.port
+    );
   }
 };
