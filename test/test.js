@@ -6,6 +6,7 @@ frame.on("closed", () => {
   process.exit();
 });
 
+
 let ctx = frame.getCanvas().getContext("2d");
 ctx.fillStyle = "black";
 
@@ -19,4 +20,4 @@ setInterval(() => {
     x = 0;
     y += 50;
   }
-}, 50);
+}, 16);
