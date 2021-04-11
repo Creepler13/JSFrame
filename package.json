@@ -14,7 +14,8 @@
     "src/"
   ],
   "scripts": {
-    "postinstall": "node src/javaI.js"
+    "postinstall": "node src/javaI.js",
+    "test":"node test/test.js"
   },
   "repository": "https://github.com/Creepler13/JSFrame.git",
   "keywords": [
