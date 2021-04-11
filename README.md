@@ -1,7 +1,6 @@
 # JSFrame
 
 JSFrame is a easy way to display something with nodejs, without the need of a browser
-
 ## Requirements
 
 ### Java
@@ -11,7 +10,7 @@ To check if available use
 ```bash
 $ java -version
 ```
-
+Please share issues and impovement ideas -> https://github.com/Creepler13/JSFrame/issues
 ## Quick Example
 
 ```javascript
