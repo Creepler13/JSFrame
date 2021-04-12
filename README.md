@@ -1,6 +1,7 @@
 # JSFrame
 
 JSFrame is a easy way to display something with nodejs, without the need of a browser
+
 ## Requirements
 
 ### Java
@@ -10,7 +11,9 @@ To check if available use
 ```bash
 $ java -version
 ```
+
 Please share issues and impovement ideas -> https://github.com/Creepler13/JSFrame/issues
+
 ## Quick Example
 
 ```javascript
@@ -72,13 +75,17 @@ let frame = new JSFrame(500, 500);
 let width = frame.getWidth();
 let height = frame.getHeight();
 ```
-The functions return either the Width or the Height of the JSFrame as an Integer 
+
+The functions return either the Width or the Height of the JSFrame as an Integer
+
 ### FrameEvents
 
 ```javascript
-frame.on("ready", () => {});
+frame.on("ready", () => {}); // run when the frame is ready
 
-frame.on("closed", () => {});
+frame.on("closed", () => {}); // run when the frame is closed
+
+frame.on("update", () => {}); // run everytime BEFORE the frame updates
 ```
 
 ### KeyEvents

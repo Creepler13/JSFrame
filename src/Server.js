@@ -39,6 +39,7 @@ module.exports = class Server {
 
     server.on("connect", () => {
       this.interval = setInterval(() => {
+        if (this.Events.update) this.Events.update();
         this.writeImg(canvas.toBuffer());
       }, 16);
       if (this.Events.ready) this.Events.ready();
@@ -75,6 +76,9 @@ module.exports = class Server {
         config.buffersize = parseInt(split[1]);
         fs.writeFileSync(__dirname + "/config.json", JSON.stringify(config));
         break;
+        case "module":
+          
+        break;
     }
   }
 
@@ -84,7 +88,7 @@ module.exports = class Server {
 
   write(msg) {
     server.send(
-      Buffer.concat([Buffer.from([1]), Buffer.from(msg), Buffer.from(";")]),
+      Buffer.concat([Buffer.from([1]), Buffer.from(msg.join(",")), Buffer.from(";")]),
       this.port
     );
   }
