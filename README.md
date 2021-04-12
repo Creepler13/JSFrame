@@ -157,7 +157,7 @@ The MouseCollider is a feature that allows for easy implmentation of, for exampl
 Its Events are equal to the Frame [MouseEvents](#mouseevents)
 
 ```javascript
-const JSFrame = require("../src/JsFrame.js");
+const JSFrame = require("jsframe.jar");
 
 let frame = new JSFrame(500, 500);
 
