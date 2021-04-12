@@ -43,15 +43,21 @@ setInterval(() => {
 
 ### Methods
 
-- [JSFrame#getCanvas](#getcanvas)
-- [JSFrame#getWidth](#getwidthheight)
-- [JSFrame#getHeight](#getwidthheight)
+- [JSFrame#getCanvas()](#getcanvas)
+- [JSFrame#getWidth()](#getwidthheight)
+- [JSFrame#getHeight()](#getwidthheight)
+- [JSFrame#createMouseCollider()](#createremovemousecollider)
+- [JSFrame#removeMouseCollider()](#createremovemousecollider)
 
 ### Events
 
 - [FrameEvents](#frameevents)
 - [KeyEvents](#keyevents)
 - [MouseEvents](#mouseevents)
+
+### Objects
+
+- [MouseCollider](#mousecollider)
 
 ### getCanvas()
 
@@ -127,3 +133,77 @@ frame.on("mouseEntered", (e) => {
   console.log(e);
 });
 ```
+
+### create/removeMouseCollider
+
+Warning these functions only work after the Frame is ready (the [ReadyEvent](#frameevents) is fired)
+
+```javascript
+createMouseCollider(x, y, width, height);
+```
+
+returns a [MouseCollider](#mousecollider)
+
+```javascript
+removeMouseCollider(MouseCollider);
+```
+
+removes the given [MouseCollider](#mousecollider) from the frame
+
+### MouseCollider
+
+The MouseCollider is a feature that allows for easy implmentation of, for example a button.
+
+Its Events are equal to the Frame [MouseEvents](#mouseevents)
+
+```javascript
+const JSFrame = require("../src/JsFrame.js");
+
+let frame = new JSFrame(500, 500);
+
+let MC;
+
+let ctx = frame.getCanvas().getContext("2d");
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, 500, 500);
+
+frame.on("ready", () => {
+  MC = frame.createMouseCollider(50, 50, 200, 200);
+
+  MC.on("mouseEntered", (e) => {
+    ctx.fillStyle = "black";
+    ctx.fillRect(50, 50, 200, 200);
+  });
+
+  MC.on("mouseExited", (e) => {
+    ctx.fillStyle = "white";
+    ctx.fillRect(50, 50, 200, 200);
+  });
+
+  MC.on("mousePressed", (e) => {
+    ctx.fillStyle = "black";
+    ctx.fillText("Button Pressed", 50, 300);
+  });
+
+  MC.on("mouseReleased", (e) => {
+    ctx.fillStyle = "white";
+    ctx.fillRect(50, 250, 150, 100);
+  });
+});
+
+frame.on("mousePressed", (e) => {
+  ctx.fillStyle = "black";
+  ctx.fillText("Frame clicked", 200, 300);
+});
+
+frame.on("mouseReleased", (e) => {
+  ctx.fillStyle = "white";
+  ctx.fillRect(150, 250, 150, 100);
+});
+
+frame.on("keyReleased", (e) => {
+  frame.removeMouseCollider(MC);
+});
+```
+
+![](https://gyazo.com/5069c443b84f6fd3b03a4abc17eb23cb.gif)

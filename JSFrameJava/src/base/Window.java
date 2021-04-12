@@ -1,4 +1,10 @@
+package base;
+
 import javax.swing.JFrame;
+
+import eventHandler.KeyEvent;
+import eventHandler.MouseEvent;
+import eventHandler.WindowEvent;
 
 public class Window {
 

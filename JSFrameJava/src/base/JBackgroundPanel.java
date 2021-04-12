@@ -1,3 +1,5 @@
+package base;
+
 
 import java.awt.EventQueue;
 import java.awt.Graphics;

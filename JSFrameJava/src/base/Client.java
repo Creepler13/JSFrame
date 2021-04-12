@@ -1,3 +1,5 @@
+package base;
+
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -17,7 +19,9 @@ public class Client {
 	public byte[] buffer;
 	public int width, heigth;
 
-	private Window window;
+	public Window window;
+	
+	private MouseColliderHandler mouseColliderHandler;
 
 	public Client(int port, int bufferSize, int width, int height) throws IOException {
 		this.window = new Window(width, height, this);
@@ -27,6 +31,7 @@ public class Client {
 		String nachricht = "port," + this.imgSocket.getLocalPort();
 		this.imgSocket.send(new DatagramPacket(nachricht.getBytes(), nachricht.getBytes().length));
 		this.buffer = new byte[bufferSize];
+		this.mouseColliderHandler = new MouseColliderHandler(this);
 	}
 
 	public void update() throws IOException {
@@ -65,9 +70,10 @@ public class Client {
 			i++;
 		}
 
-		String[] split = new String(buffer, 1, i).split(",");
+		String[] split = new String(buffer, 1, i-1).split(",");
 		switch (split[0]) {
-		case "":
+		case "mouseCollider":
+			this.mouseColliderHandler.action(split);
 			break;
 
 		}

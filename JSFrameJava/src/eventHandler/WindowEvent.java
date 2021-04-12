@@ -1,11 +1,14 @@
+package eventHandler;
 
 import java.awt.event.WindowListener;
+
+import base.Client;
 
 public class WindowEvent implements WindowListener {
 
 	private Client server = null;
 
-	WindowEvent(Client server) {
+	public WindowEvent(Client server) {
 		this.server = server;
 	}
 
@@ -15,12 +18,12 @@ public class WindowEvent implements WindowListener {
 
 	@Override
 	public void windowClosed(java.awt.event.WindowEvent e) {
-		this.server.write("closed");
+		this.server.write("frame,closed");
 	}
 
 	@Override
 	public void windowClosing(java.awt.event.WindowEvent e) {
-		this.server.write("closed");
+		this.server.write("frame,closed");
 	}
 
 	@Override
