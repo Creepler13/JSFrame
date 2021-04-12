@@ -139,13 +139,13 @@ frame.on("mouseEntered", (e) => {
 Warning these functions only work after the Frame is ready (the [ReadyEvent](#frameevents) is fired)
 
 ```javascript
-createMouseCollider(x, y, width, height);
+frame.createMouseCollider(x, y, width, height);
 ```
 
 returns a [MouseCollider](#mousecollider)
 
 ```javascript
-removeMouseCollider(MouseCollider);
+frame.removeMouseCollider(MouseCollider);
 ```
 
 removes the given [MouseCollider](#mousecollider) from the frame
