@@ -4,12 +4,12 @@ const dgram = require("dgram");
 const EventHandlerManager = require("./handlers/EventHandlerManager");
 
 module.exports = class Server {
-  constructor(width, height, canvas) {
+  constructor(width, height, canvas, hideOnReady) {
     this.width = width ? width : 500;
     this.height = height ? height : 500;
     this.bufferSize = config.buffersize;
 
-this.socket = dgram.createSocket("udp4");
+    this.socket = dgram.createSocket("udp4");
 
     this.EventManager = new EventHandlerManager(this);
 
@@ -21,6 +21,7 @@ this.socket = dgram.createSocket("udp4");
         this.bufferSize,
         this.width,
         this.height,
+        hideOnReady ? "True" : "False",
       ]);
 
       this.ls.stdout.on("data", (data) => {
@@ -37,7 +38,8 @@ this.socket = dgram.createSocket("udp4");
     });
 
     this.socket.on("message", (msg, rinfo) => {
-      if (rinfo.port != this.socket.address().port) this.EventManager.eventCall(msg);
+      if (rinfo.port != this.socket.address().port)
+        this.EventManager.eventCall(msg);
     });
 
     this.socket.on("connect", () => {
@@ -45,7 +47,7 @@ this.socket = dgram.createSocket("udp4");
         this.EventManager.eventCall("frame,update");
         this.writeImg(canvas.toBuffer());
       }, 16);
-      this.EventManager.eventCall("frame,ready")
+      this.EventManager.eventCall("frame,ready");
     });
 
     this.socket.bind();

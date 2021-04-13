@@ -41,11 +41,19 @@ setInterval(() => {
 
 ## Documentation
 
+### Objects
+
+- [Frame](#frame)
+- [MouseCollider](#mousecollider)
+
 ### Methods
 
 - [JSFrame#getCanvas()](#getcanvas)
 - [JSFrame#getWidth()](#getwidthheight)
 - [JSFrame#getHeight()](#getwidthheight)
+- [JSFrame#on()](#on)
+- [JSFrame#show()](#show)
+- [JSFrame#setIcon()](#seticon)
 - [JSFrame#createMouseCollider()](#createremovemousecollider)
 - [JSFrame#removeMouseCollider()](#createremovemousecollider)
 
@@ -55,9 +63,17 @@ setInterval(() => {
 - [KeyEvents](#keyevents)
 - [MouseEvents](#mouseevents)
 
-### Objects
+### Frame
 
-- [MouseCollider](#mousecollider)
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(width, height, hideOnReady);
+```
+
+If hideOnReady is set to true the Frame wont be shown after it is ready (the [ReadyEvent](#frameevents) is fired)
+
+This option should be used to setup the Frame for example, [set its Icon](#seticon) before [showing it](#show).
 
 ### getCanvas()
 
@@ -82,7 +98,50 @@ let width = frame.getWidth();
 let height = frame.getHeight();
 ```
 
-The functions return either the Width or the Height of the JSFrame as an Integer
+### on
+
+Used to Listen for Events
+
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(500, 500);
+
+frame.on(eventName, callBack);
+```
+
+### show()
+
+Shows the Frame if it was hidden.
+
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(500, 500, true);
+
+frame.on("ready", () => {
+  frame.show();
+});
+```
+
+Warning this function only work after the Frame is ready (the [ReadyEvent](#frameevents) is fired)
+
+### setIcon()
+
+Sets the icon of the Frame
+
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(500, 500, true);
+
+frame.on("ready", () => {
+  frame.setIcon("icon/icon.jpg");
+  frame.show();
+});
+```
+
+Warning this function only work after the Frame is ready (the [ReadyEvent](#frameevents) is fired)
 
 ### FrameEvents
 
@@ -149,6 +208,8 @@ frame.removeMouseCollider(MouseCollider);
 ```
 
 removes the given [MouseCollider](#mousecollider) from the frame
+
+Warning these functions only work after the Frame is ready (the [ReadyEvent](#frameevents) is fired)
 
 ### MouseCollider
 

@@ -30,6 +30,8 @@ frame.on("ready", () => {
     ctx.fillStyle = "white";
     ctx.fillRect(50, 250, 150, 100);
   });
+
+  frame.setIcon("icon.jpg");
 });
 
 frame.on("mousePressed", (e) => {

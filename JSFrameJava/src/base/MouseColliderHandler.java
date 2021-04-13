@@ -37,7 +37,7 @@ public class MouseColliderHandler {
 					if (((MouseColliderMotionEvent) e).getId() == rmid)
 						this.client.window.JBC.removeMouseMotionListener(e);
 			}
-			
+
 			break;
 		}
 	}

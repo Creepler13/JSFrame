@@ -1,8 +1,8 @@
 package base;
 
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -20,11 +20,11 @@ public class Client {
 	public int width, heigth;
 
 	public Window window;
-	
+
 	private MouseColliderHandler mouseColliderHandler;
 
-	public Client(int port, int bufferSize, int width, int height) throws IOException {
-		this.window = new Window(width, height, this);
+	public Client(int port, int bufferSize, int width, int height, Boolean hideOnReady) throws IOException {
+		this.window = new Window(width, height, this, hideOnReady);
 
 		this.imgSocket = new DatagramSocket();
 		this.imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
@@ -70,10 +70,20 @@ public class Client {
 			i++;
 		}
 
-		String[] split = new String(buffer, 1, i-1).split(",");
+		String[] split = new String(buffer, 1, i - 1).split(",");
 		switch (split[0]) {
 		case "mouseCollider":
 			this.mouseColliderHandler.action(split);
+			break;
+		case "show":
+			this.window.frame.setVisible(true);
+			break;
+		case "icon":
+			try {
+				this.window.frame.setIconImage(ImageIO.read(new File(split[1])));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			break;
 
 		}

@@ -1,9 +1,10 @@
 const Server = require("./Server");
 const { createCanvas } = require("canvas");
+const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
 
 module.exports = class JSFrame {
-  constructor(width, height) {
+  constructor(width, height, hideOnReady) {
     this.getWidth = () => {
       return width;
     };
@@ -18,6 +19,16 @@ module.exports = class JSFrame {
 
     this.on = (event, callBack) => {
       server.EventManager.addListener("frame", event, callBack);
+    };
+
+    this.setIcon = (path) => {
+      if (fs.existsSync(path)) {
+        server.write(["icon", fs.realpathSync(path)]);
+      }
+    };
+
+    this.show = () => {
+      server.write(["show"]);
     };
 
     let MouseColliderIds = 0;
@@ -43,12 +54,12 @@ module.exports = class JSFrame {
     };
 
     this.removeMouseCollider = (mouseCollider) => {
-      server.write(["mouseCollider","remove", mouseCollider.id]);
+      server.write(["mouseCollider", "remove", mouseCollider.id]);
     };
 
     width = width ? width : 500;
     height = height ? height : 500;
     let canvas = createCanvas(width, height);
-    let server = new Server(width, height, canvas);
+    let server = new Server(width, height, canvas, hideOnReady);
   }
 };
