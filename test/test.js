@@ -8,6 +8,11 @@ let ctx = frame.getCanvas().getContext("2d");
 ctx.fillStyle = "white";
 ctx.fillRect(0, 0, 500, 500);
 
+
+frame.on("minimized",()=>{
+  console.log("minimized")
+})
+
 frame.on("ready", () => {
   MC = frame.createMouseCollider(50, 50, 200, 200);
 

@@ -151,6 +151,10 @@ frame.on("ready", () => {}); // run when the frame is ready
 frame.on("closed", () => {}); // run when the frame is closed
 
 frame.on("update", () => {}); // run everytime BEFORE the frame updates
+
+frame.on("minimized", () => {}); // run when the frame is minimized
+
+frame.on("normalized", () => {}); // run when the frame goes back to normal after being minimized
 ```
 
 ### KeyEvents

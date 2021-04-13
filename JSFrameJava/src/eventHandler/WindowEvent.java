@@ -28,20 +28,16 @@ public class WindowEvent implements WindowListener {
 
 	@Override
 	public void windowDeactivated(java.awt.event.WindowEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void windowDeiconified(java.awt.event.WindowEvent e) {
-		// TODO Auto-generated method stub
-
+		this.server.write("frame,normalized");
 	}
 
 	@Override
 	public void windowIconified(java.awt.event.WindowEvent e) {
-		// TODO Auto-generated method stub
-
+		this.server.write("frame,minimized");
 	}
 
 	@Override
