@@ -8,14 +8,13 @@ let ctx = frame.getCanvas().getContext("2d");
 ctx.fillStyle = "white";
 ctx.fillRect(0, 0, 500, 500);
 
-
-frame.on("minimized",()=>{
-  console.log("minimized")
-})
+frame.on("minimized", () => {
+  console.log("minimized");
+});
 
 frame.on("ready", () => {
   MC = frame.createMouseCollider(50, 50, 200, 200);
-
+console.log(MC)
   MC.on("mouseEntered", (e) => {
     ctx.fillStyle = "black";
     ctx.fillRect(50, 50, 200, 200);
@@ -50,5 +49,5 @@ frame.on("mouseReleased", (e) => {
 });
 
 frame.on("keyReleased", (e) => {
-  frame.removeMouseCollider(MC);
+  MC.enabled(!MC.isEnabled);
 });

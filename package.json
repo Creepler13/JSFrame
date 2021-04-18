@@ -1,6 +1,6 @@
 {
   "name": "jsframe.jar",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "JSFrame is a easy way to display something with nodejs, without the need of a browser",
   "main": "src/JSFrame.js",
   "author": "Creepler13",
@@ -14,9 +14,9 @@
     "src/"
   ],
   "scripts": {
-    "git":"git log --graph --oneline --all",
+    "git": "git log --graph --oneline --all",
     "postinstall": "node src/javaI.js",
-    "test":"node test/test.js"
+    "test": "node test/test.js"
   },
   "repository": "https://github.com/Creepler13/JSFrame.git",
   "keywords": [

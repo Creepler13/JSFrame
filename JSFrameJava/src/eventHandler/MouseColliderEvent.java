@@ -7,9 +7,9 @@ import base.MouseColliderHandler;
 
 public class MouseColliderEvent implements MouseListener {
 
-	public int id;
 	public MouseColliderHandler MCH;
-	public int x, y, width, height;
+	public int id, x, y, width, height;
+	public boolean state = true;
 
 	public MouseColliderEvent(MouseColliderHandler MCH, int id, int x, int y, int width, int height) {
 		this.id = id;
@@ -18,7 +18,6 @@ public class MouseColliderEvent implements MouseListener {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-
 	}
 
 	@Override
@@ -27,24 +26,34 @@ public class MouseColliderEvent implements MouseListener {
 
 	}
 
+	public void setState(String state) {
+		this.state = Boolean.parseBoolean(state);
+	}
+
+	public Boolean getState() {
+		return this.state;
+	}
+
 	public int getId() {
 		return this.id;
 	}
 
 	@Override
 	public void mousePressed(java.awt.event.MouseEvent e) {
-		if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
-				&& e.getY() < this.y + this.height)
-			this.MCH.client
-					.write("mouseCollider,mousePressed," + id + "," + e.getX() + "," + e.getY() + "," + e.getButton());
+		if (getState())
+			if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
+					&& e.getY() < this.y + this.height)
+				this.MCH.client.write(
+						"mouseCollider,mousePressed," + id + "," + e.getX() + "," + e.getY() + "," + e.getButton());
 	}
 
 	@Override
 	public void mouseReleased(java.awt.event.MouseEvent e) {
-		if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
-				&& e.getY() < this.y + this.height)
-			this.MCH.client
-					.write("mouseCollider,mouseReleased," + id + "," + e.getX() + "," + e.getY() + "," + e.getButton());
+		if (getState())
+			if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
+					&& e.getY() < this.y + this.height)
+				this.MCH.client.write(
+						"mouseCollider,mouseReleased," + id + "," + e.getX() + "," + e.getY() + "," + e.getButton());
 	}
 
 	@Override

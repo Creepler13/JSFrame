@@ -2,7 +2,6 @@ const Server = require("./Server");
 const { createCanvas } = require("canvas");
 const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
-
 module.exports = class JSFrame {
   constructor(width, height, hideOnReady) {
     this.getWidth = () => {
@@ -19,6 +18,12 @@ module.exports = class JSFrame {
 
     this.on = (event, callBack) => {
       server.EventManager.addListener("frame", event, callBack);
+    };
+
+    this.update = () => {
+      if (server.interval) clearInterval(server.interval);
+      server.EventManager.eventCall("frame,update");
+      server.writeImg(canvas.toBuffer());
     };
 
     this.setIcon = (path) => {

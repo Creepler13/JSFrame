@@ -56,6 +56,9 @@ setInterval(() => {
 - [JSFrame#setIcon()](#seticon)
 - [JSFrame#createMouseCollider()](#createremovemousecollider)
 - [JSFrame#removeMouseCollider()](#createremovemousecollider)
+- [MouseCollider#enabled()](#enabled)
+- [MouseCollider#isEnabled()](#isenabled)
+- [MouseCollider#on()](#on)
 
 ### Events
 
@@ -272,3 +275,31 @@ frame.on("keyReleased", (e) => {
 ```
 
 ![](https://gyazo.com/5069c443b84f6fd3b03a4abc17eb23cb.gif)
+
+### enabled()
+
+enables or disables the [MouseCollider](#mousecollider)
+
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(width, height);
+
+let MC = frame.createMouseCollider(x, y, width, height);
+
+MC.enabled(bool);
+```
+
+### isEnabled()
+
+reuturn if the [MouseCollider](#mousecollider) is enabled
+
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(width, height);
+
+let MC = frame.createMouseCollider(x, y, width, height);
+
+MC.isEnabled();
+```
