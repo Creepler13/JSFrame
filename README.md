@@ -4,6 +4,10 @@ JSFrame is a easy way to display something with nodejs, without the need of a br
 
 ## Requirements
 
+### NodeJs
+```bash
+Version 15.*
+```
 ### Java
 
 To check if available use
