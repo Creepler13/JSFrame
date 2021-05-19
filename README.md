@@ -6,7 +6,7 @@ JSFrame is a easy way to display something with nodejs, without the need of a br
 
 ### NodeJs
 ```bash
-Version 15.*
+Version >= 15.*
 ```
 ### Java
 
