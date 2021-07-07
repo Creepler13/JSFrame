@@ -28,8 +28,8 @@ public class Client {
 
 		this.imgSocket = new DatagramSocket();
 		this.imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
-		String nachricht = "port," + this.imgSocket.getLocalPort();
-		this.imgSocket.send(new DatagramPacket(nachricht.getBytes(), nachricht.getBytes().length));
+		String message = "port," + this.imgSocket.getLocalPort();
+		this.imgSocket.send(new DatagramPacket(message.getBytes(), message.getBytes().length));
 		this.buffer = new byte[bufferSize];
 		this.mouseColliderHandler = new MouseColliderHandler(this);
 	}
@@ -53,9 +53,9 @@ public class Client {
 		}
 	}
 
-	public void write(String nachricht) {
+	public void write(String message) {
 		try {
-			this.imgSocket.send(new DatagramPacket(nachricht.getBytes(), nachricht.getBytes().length));
+			this.imgSocket.send(new DatagramPacket(message.getBytes(), message.getBytes().length));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
