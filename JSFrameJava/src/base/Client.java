@@ -60,8 +60,8 @@ public class Client {
 	private void sendMessageBuffer() {
 		try {
 			this.imgSocket.send(new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length));
+			messageBuffer = "";
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	};
