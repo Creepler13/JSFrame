@@ -1,5 +1,5 @@
 const Server = require("./Server");
-const { createCanvas } = require("canvas");
+const { createCanvas, loadImage } = require("canvas");
 const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
 module.exports = class JSFrame {
@@ -68,3 +68,5 @@ module.exports = class JSFrame {
     let server = new Server(width, height, canvas, hideOnReady);
   }
 };
+
+module.export = loadImage;
