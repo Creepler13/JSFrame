@@ -5,9 +5,11 @@ JSFrame is a easy way to display something with nodejs, without the need of a br
 ## Requirements
 
 ### NodeJs
+
 ```bash
 Version >= 15.*
 ```
+
 ### Java
 
 To check if available use
@@ -200,6 +202,14 @@ frame.on("mouseExited", (e) => {
 });
 
 frame.on("mouseEntered", (e) => {
+  console.log(e);
+});
+
+frame.on("mouseMoved", (e) => {
+  console.log(e);
+});
+
+frame.on("mouseDragged", (e) => {
   console.log(e);
 });
 ```

@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import eventHandler.KeyEvent;
 import eventHandler.MouseEvent;
+import eventHandler.MouseMotionEvent;
 import eventHandler.WindowEvent;
 
 public class Window {
@@ -21,6 +22,7 @@ public class Window {
 		JBC.requestFocusInWindow();
 		JBC.addKeyListener(new KeyEvent(client));
 		JBC.addMouseListener(new MouseEvent(client));
+		JBC.addMouseMotionListener(new MouseMotionEvent(client));
 		JBC.setBounds(0, 0, width, height);
 		frame.add(JBC);
 		if (!hideOnReady)
