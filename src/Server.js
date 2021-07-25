@@ -39,7 +39,9 @@ module.exports = class Server {
 
     this.socket.on("message", (msg, rinfo) => {
       if (rinfo.port != this.socket.address().port)
-        this.EventManager.eventCall(msg);
+        msg.split("%").forEach(message => {
+          this.EventManager.eventCall(message);
+        });
     });
 
     this.socket.on("connect", () => {

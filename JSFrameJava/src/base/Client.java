@@ -51,15 +51,23 @@ public class Client {
 		} else {
 			messageRecieved(this.buffer);
 		}
+
+		sendMessageBuffer();
 	}
 
-	public void write(String message) {
+	private String messageBuffer = "";
+
+	private void sendMessageBuffer() {
 		try {
-			this.imgSocket.send(new DatagramPacket(message.getBytes(), message.getBytes().length));
+			this.imgSocket.send(new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	};
+
+	public void write(String message) {
+		messageBuffer = messageBuffer + "%" + message;
 	}
 
 	public void messageRecieved(byte[] buffer) {
