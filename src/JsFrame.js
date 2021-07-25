@@ -4,6 +4,8 @@ const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
 module.exports = class JSFrame {
   constructor(width, height, hideOnReady) {
+    this.loadImage = loadImage;
+
     this.getWidth = () => {
       return width;
     };
@@ -68,5 +70,3 @@ module.exports = class JSFrame {
     let server = new Server(width, height, canvas, hideOnReady);
   }
 };
-
-module.export = loadImage;
