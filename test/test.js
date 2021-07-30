@@ -14,7 +14,7 @@ frame.on("minimized", () => {
 
 frame.on("ready", () => {
   MC = frame.createMouseCollider(50, 50, 200, 200);
-console.log(MC)
+
   MC.on("mouseEntered", (e) => {
     ctx.fillStyle = "black";
     ctx.fillRect(50, 50, 200, 200);

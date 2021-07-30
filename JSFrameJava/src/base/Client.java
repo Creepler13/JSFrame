@@ -1,5 +1,6 @@
 package base;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,6 +21,9 @@ public class Client {
 	public int width, heigth;
 
 	public Window window;
+
+	public BufferedImage background;
+	public Graphics2D g2d;
 
 	private MouseColliderHandler mouseColliderHandler;
 
@@ -47,7 +51,17 @@ public class Client {
 				return;
 			}
 			bis.close();
-			window.JBC.setBackground(image);
+
+			if (background == null) {
+				background = image;
+				g2d = image.createGraphics();
+				window.JBC.setBackground(background);
+			} else {
+				int width = image.getWidth(), heigth = image.getHeight();
+				g2d.drawImage(image, 0, 0, width, heigth, 0, 0, width, heigth, null);
+			}
+			window.JBC.setBackground(background);
+
 		} else {
 			messageRecieved(this.buffer);
 		}
@@ -58,16 +72,20 @@ public class Client {
 	private String messageBuffer = "";
 
 	private void sendMessageBuffer() {
-		try {
-			this.imgSocket.send(new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length));
-			messageBuffer = "";
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (messageBuffer.length() > 0) {
+			try {
+				DatagramPacket pack = new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length - 1);
+				this.imgSocket.send(pack);
+				messageBuffer = "";
+			} catch (IOException | IllegalArgumentException e) {
+				System.out.println("messageBuffer that caused error " + messageBuffer);
+				e.printStackTrace();
+			}
 		}
-	};
+	}
 
 	public void write(String message) {
-		messageBuffer = messageBuffer + "%" + message;
+		messageBuffer = messageBuffer + message + "%";
 	}
 
 	public void messageRecieved(byte[] buffer) {

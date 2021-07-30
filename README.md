@@ -169,7 +169,7 @@ frame.on("normalized", () => {}); // run when the frame goes back to normal afte
 ### KeyEvents
 
 ```javascript
-//example output : { keyCode: 65, key: "a" }
+//example output : { keyCode: 65, key: "a", event: { type: "frame", name: "keyPressed"}}
 
 frame.on("keyPressed", (e) => {
   console.log(e);
@@ -183,7 +183,7 @@ frame.on("keyReleased", (e) => {
 ### MouseEvents
 
 ```javascript
-//example output : { x: 100, y: 100, button: 1 }
+//example output : { x: 100, y: 100, button: 1, event: { type: "frame", name: "mousePressed"} }
 // button = 0 (no button used)
 // button = 1 (left-click)
 // button = 2 (mouse-wheel)

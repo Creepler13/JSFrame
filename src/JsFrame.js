@@ -24,8 +24,7 @@ module.exports = class JSFrame {
 
     this.update = () => {
       if (server.interval) clearInterval(server.interval);
-      server.EventManager.eventCall("frame,update");
-      server.writeImg(canvas.toBuffer());
+      server.update(server);
     };
 
     this.setIcon = (path) => {
@@ -67,6 +66,7 @@ module.exports = class JSFrame {
     width = width ? width : 500;
     height = height ? height : 500;
     let canvas = createCanvas(width, height);
-    let server = new Server(width, height, canvas, hideOnReady);
+    let serverCanvas = createCanvas(width, height);
+    let server = new Server(width, height, canvas, serverCanvas, hideOnReady);
   }
 };

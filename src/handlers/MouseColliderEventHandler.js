@@ -10,13 +10,14 @@ module.exports = class MouseColliderEventHandler {
     this.Events[event][option[0]] = callBack;
   }
 
-  eventCall(split) {
+  eventCall(split, type) {
     if (this.Events[split[0]])
       if (this.Events[split[0]][split[1]])
         this.Events[split[0]][split[1]]({
           x: parseInt(split[2]),
           y: parseInt(split[3]),
           button: split[4] ? parseInt(split[4]) : 0,
+          event: { type: type, name: split[0] },
         });
   }
 };

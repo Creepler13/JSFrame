@@ -31,6 +31,6 @@ module.exports = class EventHandlerManager {
         break;
     }
 
-    if (this.handlers[type]) this.handlers[type].eventCall(split);
+    if (this.handlers[type]) this.handlers[type].eventCall(split,type);
   }
 };

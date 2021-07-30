@@ -4,10 +4,21 @@ const dgram = require("dgram");
 const EventHandlerManager = require("./handlers/EventHandlerManager");
 
 module.exports = class Server {
-  constructor(width, height, canvas, hideOnReady) {
+  constructor(width, height, canvas, serverCanvas, hideOnReady) {
     this.width = width ? width : 500;
     this.height = height ? height : 500;
     this.bufferSize = config.buffersize;
+
+    this.canvas = canvas;
+    this.serverCanvas = serverCanvas;
+    this.g = canvas.getContext("2d");
+    this.gS = serverCanvas.getContext("2d");
+    this.lastFrame = this.g.getImageData(
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height
+    );
 
     this.socket = dgram.createSocket("udp4");
 
@@ -39,20 +50,56 @@ module.exports = class Server {
 
     this.socket.on("message", (msg, rinfo) => {
       if (rinfo.port != this.socket.address().port)
-        (msg+"").split("%").forEach(message => {
+        (msg + "").split("%").forEach((message) => {
           this.EventManager.eventCall(message);
         });
     });
 
     this.socket.on("connect", () => {
       this.interval = setInterval(() => {
-        this.EventManager.eventCall("frame,update");
-        this.writeImg(canvas.toBuffer());
+        this.update(this);
       }, 16);
       this.EventManager.eventCall("frame,ready");
     });
 
     this.socket.bind();
+  }
+
+  update(Server) {
+    Server.EventManager.eventCall("frame,update");
+
+    let currentFrame = Server.g.getImageData(
+      0,
+      0,
+      Server.canvas.width,
+      Server.canvas.height
+    );
+    let frameDiff = Server.gS.createImageData(currentFrame);
+
+    for (let i = 0; i < currentFrame.data.length; i = i + 4) {
+      if (
+        currentFrame.data[i] != Server.lastFrame.data[i] ||
+        currentFrame.data[i + 1] != Server.lastFrame.data[i + 1] ||
+        currentFrame.data[i + 2] != Server.lastFrame.data[i + 2] ||
+        currentFrame.data[i + 3] != Server.lastFrame.data[i + 3]
+      ) {
+        frameDiff.data[i] = currentFrame.data[i];
+        frameDiff.data[i + 1] = currentFrame.data[i + 1];
+        frameDiff.data[i + 2] = currentFrame.data[i + 2];
+        frameDiff.data[i + 3] = currentFrame.data[i + 3];
+      } else {
+        // frameDiff.data[i] = Server.lastFrame.data[i];
+        // frameDiff.data[i + 1] = Server.lastFrame.data[i + 1];
+        // frameDiff.data[i + 2] = Server.lastFrame.data[i + 2];
+        // frameDiff.data[i + 3] = Server.lastFrame.data[i + 3];
+      }
+    }
+
+    Server.gS.putImageData(frameDiff, 0, 0);
+
+    Server.writeImg(Server.serverCanvas.toBuffer());
+
+    Server.lastFrame = currentFrame;
   }
 
   writeImg(buffer) {
