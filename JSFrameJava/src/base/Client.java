@@ -74,6 +74,7 @@ public class Client {
 	private void sendMessageBuffer() {
 		if (messageBuffer.length() > 0) {
 			try {
+				messageBuffer = messageBuffer.replaceFirst("&", "");
 				DatagramPacket pack = new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length - 1);
 				this.imgSocket.send(pack);
 				messageBuffer = "";
@@ -85,7 +86,7 @@ public class Client {
 	}
 
 	public void write(String message) {
-		messageBuffer = messageBuffer + message + "%";
+		messageBuffer = messageBuffer + "%" + message;
 	}
 
 	public void messageRecieved(byte[] buffer) {

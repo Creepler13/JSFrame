@@ -51,3 +51,12 @@ frame.on("mouseReleased", (e) => {
 frame.on("keyReleased", (e) => {
   MC.enabled(!MC.isEnabled);
 });
+
+frame.on("bpsa", (e) => {
+  console.log("bpsa: " + e.bpsa);
+});
+
+frame.on("closed", (e) => {
+  console.log(e);
+  process.exit(0);
+});

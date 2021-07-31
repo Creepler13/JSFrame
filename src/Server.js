@@ -20,6 +20,9 @@ module.exports = class Server {
       this.canvas.height
     );
 
+    this.averageBufferSizePerSec = 0;
+    this.lastAverageBufferSizePerSecReset = 0;
+
     this.socket = dgram.createSocket("udp4");
 
     this.EventManager = new EventHandlerManager(this);
@@ -87,17 +90,27 @@ module.exports = class Server {
         frameDiff.data[i + 1] = currentFrame.data[i + 1];
         frameDiff.data[i + 2] = currentFrame.data[i + 2];
         frameDiff.data[i + 3] = currentFrame.data[i + 3];
-      } else {
-        // frameDiff.data[i] = Server.lastFrame.data[i];
-        // frameDiff.data[i + 1] = Server.lastFrame.data[i + 1];
-        // frameDiff.data[i + 2] = Server.lastFrame.data[i + 2];
-        // frameDiff.data[i + 3] = Server.lastFrame.data[i + 3];
       }
     }
 
     Server.gS.putImageData(frameDiff, 0, 0);
 
-    Server.writeImg(Server.serverCanvas.toBuffer());
+    let buffer = Server.serverCanvas.toBuffer();
+
+    let secs = process.hrtime()[0];
+
+    if (secs != Server.lastAverageBufferSizePerSecReset) {
+      Server.EventManager.eventCall(
+        "frame,bpsa," + Server.averageBufferSizePerSec
+      );
+      Server.averageBufferSizePerSec = buffer.length;
+      Server.lastAverageBufferSizePerSecReset = secs;
+    } else {
+      Server.averageBufferSizePerSec =
+        (Server.averageBufferSizePerSec + buffer.length) / 2;
+    }
+
+    Server.writeImg(buffer);
 
     Server.lastFrame = currentFrame;
   }

@@ -9,7 +9,7 @@ module.exports = class EventHandlerManager {
   constructor(server) {
     this.server = server;
     this.handlers.frame = new FrameEventHandler(server);
-    this.handlers.mouseCollider =new MouseColliderEventHandler(server);
+    this.handlers.mouseCollider = new MouseColliderEventHandler(server);
   }
 
   addListener(type, event, callBack, option) {
@@ -31,6 +31,9 @@ module.exports = class EventHandlerManager {
         break;
     }
 
-    if (this.handlers[type]) this.handlers[type].eventCall(split,type);
+    if (this.handlers[type])
+      this.handlers[type].eventCall(split, {
+        event: { type: type, name: split[0] },
+      });
   }
 };
