@@ -3,15 +3,15 @@ const { loadImage } = require("canvas");
 const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
 module.exports = class JSFrame {
-  constructor() {
+  constructor(x, y, width, height, hide) {
     this.loadImage = loadImage;
 
     this.getWidth = () => {
-      return width;
+      return server.canvas.width;
     };
 
     this.getHeight = () => {
-      return height;
+      return server.canvas.height;
     };
 
     this.getCanvas = () => {
@@ -75,6 +75,6 @@ module.exports = class JSFrame {
       server.write(["mouseCollider", "remove", mouseCollider.id]);
     };
 
-    let server = new Server();
+    let server = new Server(x, y, width, height, hide);
   }
 };
