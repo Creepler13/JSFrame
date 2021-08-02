@@ -12,7 +12,7 @@ public class Window {
 	public JFrame frame = null;
 	public JBackgroundPanel JBC = null;
 
-	public Window(int width, int height, Client client, Boolean hideOnReady) {
+	public Window(int x, int y, int width, int height, Client client, Boolean hideOnReady) {
 		frame = new JFrame();
 		frame.setBounds(0, 0, width + 16, height + 39);
 		frame.setResizable(false);
@@ -23,7 +23,7 @@ public class Window {
 		JBC.addKeyListener(new KeyEvent(client));
 		JBC.addMouseListener(new MouseEvent(client));
 		JBC.addMouseMotionListener(new MouseMotionEvent(client));
-		JBC.setBounds(0, 0, width, height);
+		JBC.setBounds(x, y, width, height);
 		frame.add(JBC);
 		if (!hideOnReady)
 			frame.setVisible(true);

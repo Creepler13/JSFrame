@@ -68,4 +68,17 @@ public class MouseColliderEvent implements MouseListener {
 
 	}
 
+	public void setSize(int width, int heigth) {
+		this.width = width;
+		this.height = heigth;
+		
+
+	}
+
+	public void setPosition(int x, int y) {
+		// TODO Auto-generated method stub
+		this.x = x;
+		this.y = y;
+	}
+
 }

@@ -1,18 +1,22 @@
 const { spawn } = require("child_process");
 let config = require("./config.json");
 const dgram = require("dgram");
+const { createCanvas } = require("canvas");
 const EventHandlerManager = require("./handlers/EventHandlerManager");
 
 module.exports = class Server {
-  constructor(width, height, canvas, serverCanvas, hideOnReady) {
+  constructor(x, y, width, height, hideOnReady) {
     this.width = width ? width : 500;
     this.height = height ? height : 500;
+    this.x = x ? x : 0;
+    this.y = y ? y : 0;
     this.bufferSize = config.buffersize;
-
-    this.canvas = canvas;
-    this.serverCanvas = serverCanvas;
-    this.g = canvas.getContext("2d");
-    this.gS = serverCanvas.getContext("2d");
+    this.ready = false;
+    this.preReadyBuffer = [];
+    this.canvas = createCanvas(this.width, this.height);
+    this.serverCanvas = createCanvas(this.width, this.height);
+    this.g = this.canvas.getContext("2d");
+    this.gS = this.serverCanvas.getContext("2d");
     this.lastFrame = this.g.getImageData(
       0,
       0,
@@ -21,6 +25,7 @@ module.exports = class Server {
     );
 
     this.averageBufferSizePerSec = 0;
+    this.maxAverageBufferSizePerSec = 0;
     this.lastAverageBufferSizePerSecReset = 0;
 
     this.socket = dgram.createSocket("udp4");
@@ -33,6 +38,8 @@ module.exports = class Server {
         __dirname + "/JSFrame.jar",
         this.socket.address().port,
         this.bufferSize,
+        this.x,
+        this.y,
         this.width,
         this.height,
         hideOnReady ? "True" : "False",
@@ -63,6 +70,8 @@ module.exports = class Server {
         this.update(this);
       }, 16);
       this.EventManager.eventCall("frame,ready");
+      this.ready = true;
+      this.writePreReadyBuffer();
     });
 
     this.socket.bind();
@@ -100,8 +109,13 @@ module.exports = class Server {
     let secs = process.hrtime()[0];
 
     if (secs != Server.lastAverageBufferSizePerSecReset) {
+      if (Server.maxAverageBufferSizePerSec < Server.averageBufferSizePerSec)
+        Server.maxAverageBufferSizePerSec = Server.averageBufferSizePerSec;
       Server.EventManager.eventCall(
-        "frame,bpsa," + Server.averageBufferSizePerSec
+        "frame,bpsa," +
+          Server.averageBufferSizePerSec +
+          "," +
+          Server.maxAverageBufferSizePerSec
       );
       Server.averageBufferSizePerSec = buffer.length;
       Server.lastAverageBufferSizePerSecReset = secs;
@@ -119,14 +133,24 @@ module.exports = class Server {
     this.socket.send(Buffer.concat([Buffer.from([0]), buffer]), this.port);
   }
 
+  writePreReadyBuffer() {
+    this.preReadyBuffer.forEach((e) => {
+      this.write(e);
+    });
+  }
+
   write(msg) {
-    this.socket.send(
-      Buffer.concat([
-        Buffer.from([1]),
-        Buffer.from(msg.join(",")),
-        Buffer.from(";"),
-      ]),
-      this.port
-    );
+    if (this.ready) {
+      this.socket.send(
+        Buffer.concat([
+          Buffer.from([1]),
+          Buffer.from(msg.join(",")),
+          Buffer.from(";"),
+        ]),
+        this.port
+      );
+    } else {
+      this.preReadyBuffer.push(msg);
+    }
   }
 };

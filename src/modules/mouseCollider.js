@@ -19,5 +19,19 @@ module.exports = class MouseCollider {
     this.on = (event, callBack) => {
       EventManager.addListener("mouseCollider", event, callBack, [id]);
     };
+
+    this.setSize = (width, height) => {
+      EventManager.server.write([
+        "mouseCollider",
+        "size",
+        this.id,
+        width,
+        height,
+      ]);
+    };
+
+    this.setPosition = (x, y) => {
+      EventManager.server.write(["mouseCollider", "position", this.id, x, y]);
+    };
   }
 };

@@ -27,8 +27,9 @@ public class Client {
 
 	private MouseColliderHandler mouseColliderHandler;
 
-	public Client(int port, int bufferSize, int width, int height, Boolean hideOnReady) throws IOException {
-		this.window = new Window(width, height, this, hideOnReady);
+	public Client(int port, int bufferSize, int x, int y, int width, int height, Boolean hideOnReady)
+			throws IOException {
+		this.window = new Window(x, y, width, height, this, hideOnReady);
 
 		this.imgSocket = new DatagramSocket();
 		this.imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
@@ -74,7 +75,6 @@ public class Client {
 	private void sendMessageBuffer() {
 		if (messageBuffer.length() > 0) {
 			try {
-				messageBuffer = messageBuffer.replaceFirst("&", "");
 				DatagramPacket pack = new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length - 1);
 				this.imgSocket.send(pack);
 				messageBuffer = "";
@@ -86,7 +86,7 @@ public class Client {
 	}
 
 	public void write(String message) {
-		messageBuffer = messageBuffer + "%" + message;
+		messageBuffer = messageBuffer + message + "%";
 	}
 
 	public void messageRecieved(byte[] buffer) {
@@ -112,7 +112,19 @@ public class Client {
 				e.printStackTrace();
 			}
 			break;
-
+		case "position":
+			this.window.frame.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]),
+					this.window.frame.getWidth(), this.window.frame.getHeight());
+			this.window.JBC.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]),
+					this.window.frame.getWidth(), this.window.frame.getHeight());
+			break;
+		case "size":
+			this.window.frame.setBounds(this.window.frame.getX(), this.window.frame.getY(),
+					Integer.parseInt(split[1]) + 16, Integer.parseInt(split[2]) + 39);
+			this.window.JBC.setBounds(this.window.frame.getX(), this.window.frame.getY(),
+					Integer.parseInt(split[1]) + 16, Integer.parseInt(split[2]) + 39);
+			this.background = null;
+			break;
 		}
 	}
 

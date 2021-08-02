@@ -38,6 +38,20 @@ public class MouseColliderHandler {
 					if (((MouseColliderEvent) e).getId() == id)
 						((MouseColliderEvent) e).setState(split[3]);
 			}
+
+		case "size":
+			for (MouseListener e : this.client.window.JBC.getMouseListeners()) {
+				if (e.getClass() == MouseColliderEvent.class)
+					if (((MouseColliderEvent) e).getId() == id)
+						((MouseColliderEvent) e).setSize(Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+			}
+			break;
+		case "position":
+			for (MouseListener e : this.client.window.JBC.getMouseListeners()) {
+				if (e.getClass() == MouseColliderEvent.class)
+					if (((MouseColliderEvent) e).getId() == id)
+						((MouseColliderEvent) e).setPosition(Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+			}
 			break;
 		}
 	}

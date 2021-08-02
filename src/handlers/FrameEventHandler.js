@@ -18,10 +18,12 @@ module.exports = class FrameEventHandler {
         if (this.Events.closed) this.Events.closed(event);
         return;
       case "bpsa":
-        this.Events[split[0]]({
-          bpsa: parseFloat(split[1]),
-          event,
-        });
+        if (this.Events[split[0]])
+          this.Events[split[0]]({
+            bpsa: parseFloat(split[1]),
+            maxbpsa:parseFloat(split[2]),
+            event,
+          });
         return;
     }
 

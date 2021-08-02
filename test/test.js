@@ -1,6 +1,8 @@
 const JSFrame = require("../src/JsFrame.js");
 
-let frame = new JSFrame(500, 500);
+let frame = new JSFrame();
+frame.setSize(500,500)
+frame.show();
 
 let MC;
 
@@ -46,6 +48,8 @@ frame.on("mousePressed", (e) => {
 frame.on("mouseReleased", (e) => {
   ctx.fillStyle = "white";
   ctx.fillRect(150, 250, 150, 100);
+  MC.setSize(100,100);
+  MC.setPosition(100,100);
 });
 
 frame.on("keyReleased", (e) => {
@@ -53,7 +57,7 @@ frame.on("keyReleased", (e) => {
 });
 
 frame.on("bpsa", (e) => {
-  console.log("bpsa: " + e.bpsa);
+  console.log("bpsa: " + e.bpsa+" highscore "+e.maxbpsa);
 });
 
 frame.on("closed", (e) => {
