@@ -1,7 +1,8 @@
 const Server = require("./Server");
 const { loadImage } = require("canvas");
 const fs = require("fs");
-const MouseCollider = require("./modules/mouseCollider");
+
+const { componentFunctions, init } = require("./handlers/moduleHandler");
 module.exports = class JSFrame {
   constructor(x, y, width, height, hide) {
     this.loadImage = loadImage;
@@ -49,32 +50,9 @@ module.exports = class JSFrame {
       server.write(["show"]);
     };
 
-    let MouseColliderIds = 0;
-    this.createMouseCollider = (x, y, width, height) => {
-      MouseColliderIds++;
-      server.write([
-        "mouseCollider",
-        "add",
-        MouseColliderIds - 1,
-        x,
-        y,
-        width,
-        height,
-      ]);
-      return new MouseCollider(
-        x,
-        y,
-        width,
-        height,
-        MouseColliderIds - 1,
-        server.EventManager
-      );
-    };
-
-    this.removeMouseCollider = (mouseCollider) => {
-      server.write(["mouseCollider", "remove", mouseCollider.id]);
-    };
+    this.components = componentFunctions;
 
     let server = new Server(x, y, width, height, hide);
+    init(server);
   }
 };

@@ -2,7 +2,7 @@ let config = require("../config.json");
 const fs = require("fs");
 const FrameEventHandler = require("./FrameEventHandler");
 const MouseColliderEventHandler = require("./MouseColliderEventHandler");
-
+const TextAreaEventHandler = require("./TextAreaEventHandler");
 module.exports = class EventHandlerManager {
   handlers = {};
 
@@ -10,6 +10,7 @@ module.exports = class EventHandlerManager {
     this.server = server;
     this.handlers.frame = new FrameEventHandler(server);
     this.handlers.mouseCollider = new MouseColliderEventHandler(server);
+    this.handlers.textArea = new TextAreaEventHandler(server);
   }
 
   addListener(type, event, callBack, option) {

@@ -1,7 +1,7 @@
 const JSFrame = require("../src/JsFrame.js");
 
 let frame = new JSFrame();
-frame.setSize(500,500)
+frame.setSize(500, 500);
 frame.show();
 
 let MC;
@@ -14,8 +14,10 @@ frame.on("minimized", () => {
   console.log("minimized");
 });
 
+let textArea = frame.components.createTextArea(0, 0, 250, 250);
+
 frame.on("ready", () => {
-  MC = frame.createMouseCollider(50, 50, 200, 200);
+  MC = frame.components.createMouseCollider(50, 50, 200, 200);
 
   MC.on("mouseEntered", (e) => {
     ctx.fillStyle = "black";
@@ -48,8 +50,11 @@ frame.on("mousePressed", (e) => {
 frame.on("mouseReleased", (e) => {
   ctx.fillStyle = "white";
   ctx.fillRect(150, 250, 150, 100);
-  MC.setSize(100,100);
-  MC.setPosition(100,100);
+  MC.setSize(100, 100);
+  MC.setPosition(100, 100);
+  textArea.getData().then((e) => {
+    console.log(e);
+  });
 });
 
 frame.on("keyReleased", (e) => {
@@ -57,7 +62,7 @@ frame.on("keyReleased", (e) => {
 });
 
 frame.on("bpsa", (e) => {
-  console.log("bpsa: " + e.bpsa+" highscore "+e.maxbpsa);
+//  console.log("bpsa: " + e.bpsa + " highscore " + e.maxbpsa);
 });
 
 frame.on("closed", (e) => {

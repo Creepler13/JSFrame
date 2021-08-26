@@ -3,17 +3,15 @@ package eventHandler;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import base.MouseColliderHandler;
+import base.Client;
 
 public class MouseColliderEvent implements MouseListener {
 
-	public MouseColliderHandler MCH;
 	public int id, x, y, width, height;
 	public boolean state = true;
 
-	public MouseColliderEvent(MouseColliderHandler MCH, int id, int x, int y, int width, int height) {
+	public MouseColliderEvent(int id, int x, int y, int width, int height) {
 		this.id = id;
-		this.MCH = MCH;
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -43,7 +41,7 @@ public class MouseColliderEvent implements MouseListener {
 		if (getState())
 			if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
 					&& e.getY() < this.y + this.height)
-				this.MCH.client.write(
+				Client.write(
 						"mouseCollider,mousePressed," + id + "," + e.getX() + "," + e.getY() + "," + e.getButton());
 	}
 
@@ -52,7 +50,7 @@ public class MouseColliderEvent implements MouseListener {
 		if (getState())
 			if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
 					&& e.getY() < this.y + this.height)
-				this.MCH.client.write(
+				Client.write(
 						"mouseCollider,mouseReleased," + id + "," + e.getX() + "," + e.getY() + "," + e.getButton());
 	}
 
@@ -71,7 +69,6 @@ public class MouseColliderEvent implements MouseListener {
 	public void setSize(int width, int heigth) {
 		this.width = width;
 		this.height = heigth;
-		
 
 	}
 

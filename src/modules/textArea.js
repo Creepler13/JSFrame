@@ -1,4 +1,4 @@
-module.exports = class MouseCollider {
+module.exports = class TextArea {
   constructor(x, y, width, height, id, EventManager) {
     this.x = x;
     this.y = y;
@@ -7,7 +7,19 @@ module.exports = class MouseCollider {
     this.height = height;
     let isOn = true;
 
-    this.type = "mouseCollider";
+    this.type = "textArea";
+
+    let getDataCall;
+
+    EventManager.addListener(
+      this.type,
+      "getData",
+      (e) => {
+        if (getDataCall != undefined) getDataCall.res(e);
+        getDataCall = undefined;
+      },
+      [id]
+    );
 
     this.enabled = (bool) => {
       EventManager.server.write([this.type, "setState", this.id, bool]);
@@ -28,6 +40,16 @@ module.exports = class MouseCollider {
 
     this.setPosition = (x, y) => {
       EventManager.server.write([this.type, "position", this.id, x, y]);
+    };
+
+    this.getData = () => {
+      if (getDataCall != undefined) return getDataCall.promise;
+      getDataCall = {};
+      getDataCall.promise = new Promise((res, rej) => {
+        getDataCall.res = res;
+      });
+      EventManager.server.write([this.type, "getData", this.id]);
+      return getDataCall.promise;
     };
   }
 };

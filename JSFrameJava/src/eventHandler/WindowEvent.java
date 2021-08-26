@@ -6,24 +6,18 @@ import base.Client;
 
 public class WindowEvent implements WindowListener {
 
-	private Client server = null;
-
-	public WindowEvent(Client server) {
-		this.server = server;
-	}
-
 	@Override
 	public void windowActivated(java.awt.event.WindowEvent e) {
 	}
 
 	@Override
 	public void windowClosed(java.awt.event.WindowEvent e) {
-		this.server.write("frame,closed");
+		Client.write("frame,closed");
 	}
 
 	@Override
 	public void windowClosing(java.awt.event.WindowEvent e) {
-		this.server.write("frame,closed");
+		Client.write("frame,closed");
 	}
 
 	@Override
@@ -32,12 +26,12 @@ public class WindowEvent implements WindowListener {
 
 	@Override
 	public void windowDeiconified(java.awt.event.WindowEvent e) {
-		this.server.write("frame,normalized");
+		Client.write("frame,normalized");
 	}
 
 	@Override
 	public void windowIconified(java.awt.event.WindowEvent e) {
-		this.server.write("frame,minimized");
+		Client.write("frame,minimized");
 	}
 
 	@Override

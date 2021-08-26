@@ -12,43 +12,41 @@ import java.net.Socket;
 
 import javax.imageio.ImageIO;
 
+import base.moduleHandler.MouseColliderHandler;
+import base.moduleHandler.TextAreaHandler;
+
 public class Client {
 
-	public DatagramSocket imgSocket;
-	public Socket msgSocket;
+	public static DatagramSocket imgSocket;
+	public static Socket msgSocket;
 
-	public byte[] buffer;
-	public int width, heigth;
+	public static byte[] buffer;
+	public static int width, heigth;
 
-	public Window window;
+	public static BufferedImage background;
+	public static Graphics2D g2d;
 
-	public BufferedImage background;
-	public Graphics2D g2d;
-
-	private MouseColliderHandler mouseColliderHandler;
-
-	public Client(int port, int bufferSize, int x, int y, int width, int height, Boolean hideOnReady)
+	public static void init(int port, int bufferSize, int x, int y, int width, int height, Boolean hideOnReady)
 			throws IOException {
-		this.window = new Window(x, y, width, height, this, hideOnReady);
+		Window.createWindow(x, y, width, height, hideOnReady);
 
-		this.imgSocket = new DatagramSocket();
-		this.imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
-		String message = "port," + this.imgSocket.getLocalPort();
-		this.imgSocket.send(new DatagramPacket(message.getBytes(), message.getBytes().length));
-		this.buffer = new byte[bufferSize];
-		this.mouseColliderHandler = new MouseColliderHandler(this);
+		imgSocket = new DatagramSocket();
+		imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
+		String message = "port," + imgSocket.getLocalPort();
+		imgSocket.send(new DatagramPacket(message.getBytes(), message.getBytes().length));
+		buffer = new byte[bufferSize];
 	}
 
-	public void update() throws IOException {
-		this.imgSocket.receive(new DatagramPacket(this.buffer, this.buffer.length));
-		if (this.buffer[0] == 0) {
+	public static void update() throws IOException {
+		Client.imgSocket.receive(new DatagramPacket(Client.buffer, Client.buffer.length));
+		if (Client.buffer[0] == 0) {
 			BufferedImage image = null;
-			ByteArrayInputStream bis = new ByteArrayInputStream(this.buffer, 1, this.buffer.length);
+			ByteArrayInputStream bis = new ByteArrayInputStream(Client.buffer, 1, Client.buffer.length);
 			try {
 				image = ImageIO.read(bis);
 			} catch (javax.imageio.IIOException e) {
-				this.buffer = new byte[this.buffer.length * 2];
-				this.write("bufferfix," + this.buffer.length);
+				Client.buffer = new byte[Client.buffer.length * 2];
+				write("bufferfix," + Client.buffer.length);
 				return;
 			}
 			bis.close();
@@ -56,27 +54,27 @@ public class Client {
 			if (background == null) {
 				background = image;
 				g2d = image.createGraphics();
-				window.JBC.setBackground(background);
+				Window.JBC.setBackground(background);
 			} else {
 				int width = image.getWidth(), heigth = image.getHeight();
 				g2d.drawImage(image, 0, 0, width, heigth, 0, 0, width, heigth, null);
 			}
-			window.JBC.setBackground(background);
+			Window.JBC.setBackground(background);
 
 		} else {
-			messageRecieved(this.buffer);
+			messageRecieved(Client.buffer);
 		}
 
 		sendMessageBuffer();
 	}
 
-	private String messageBuffer = "";
+	private static String messageBuffer = "";
 
-	private void sendMessageBuffer() {
+	private static void sendMessageBuffer() {
 		if (messageBuffer.length() > 0) {
 			try {
 				DatagramPacket pack = new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length - 1);
-				this.imgSocket.send(pack);
+				Client.imgSocket.send(pack);
 				messageBuffer = "";
 			} catch (IOException | IllegalArgumentException e) {
 				System.out.println("messageBuffer that caused error " + messageBuffer);
@@ -85,11 +83,11 @@ public class Client {
 		}
 	}
 
-	public void write(String message) {
+	public static void write(String message) {
 		messageBuffer = messageBuffer + message + "%";
 	}
 
-	public void messageRecieved(byte[] buffer) {
+	public static void messageRecieved(byte[] buffer) {
 		int i = 0;
 		for (byte b : buffer) {
 			if (b == (byte) 0x3b)
@@ -100,30 +98,33 @@ public class Client {
 		String[] split = new String(buffer, 1, i - 1).split(",");
 		switch (split[0]) {
 		case "mouseCollider":
-			this.mouseColliderHandler.action(split);
+			MouseColliderHandler.action(split);
+			break;
+		case "textArea":
+			TextAreaHandler.action(split);
 			break;
 		case "show":
-			this.window.frame.setVisible(true);
+			Window.frame.setVisible(true);
 			break;
 		case "icon":
 			try {
-				this.window.frame.setIconImage(ImageIO.read(new File(split[1])));
+				Window.frame.setIconImage(ImageIO.read(new File(split[1])));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			break;
 		case "position":
-			this.window.frame.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]),
-					this.window.frame.getWidth(), this.window.frame.getHeight());
-			this.window.JBC.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]),
-					this.window.frame.getWidth(), this.window.frame.getHeight());
+			Window.frame.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]), Window.frame.getWidth(),
+					Window.frame.getHeight());
+			Window.JBC.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]), Window.frame.getWidth(),
+					Window.frame.getHeight());
 			break;
 		case "size":
-			this.window.frame.setBounds(this.window.frame.getX(), this.window.frame.getY(),
-					Integer.parseInt(split[1]) + 16, Integer.parseInt(split[2]) + 39);
-			this.window.JBC.setBounds(this.window.frame.getX(), this.window.frame.getY(),
-					Integer.parseInt(split[1]) + 16, Integer.parseInt(split[2]) + 39);
-			this.background = null;
+			Window.frame.setBounds(Window.frame.getX(), Window.frame.getY(), Integer.parseInt(split[1]) + 16,
+					Integer.parseInt(split[2]) + 39);
+			Window.JBC.setBounds(Window.frame.getX(), Window.frame.getY(), Integer.parseInt(split[1]) + 16,
+					Integer.parseInt(split[2]) + 39);
+			Client.background = null;
 			break;
 		}
 	}
