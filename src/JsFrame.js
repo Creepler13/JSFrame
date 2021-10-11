@@ -3,6 +3,14 @@ const { loadImage } = require("canvas");
 const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
 module.exports = class JSFrame {
+  /**
+   *
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Number} width
+   * @param {Number} height
+   * @param {Boolean?} hide
+   */
   constructor(x, y, width, height, hide) {
     this.loadImage = loadImage;
 
@@ -18,6 +26,11 @@ module.exports = class JSFrame {
       return server.canvas;
     };
 
+    /**
+     *
+     * @param {"ready"|"closed"|"update"|"minimized"|"normalized"|"keyPressed"|"keyReleased"|"mousePressed"|"mouseReleased"|"mouseExited"|"mouseEntered"|"mouseMoved"|"mouseDragged"} event
+     * @param {*} callBack
+     */
     this.on = (event, callBack) => {
       server.EventManager.addListener("frame", event, callBack);
     };
@@ -39,6 +52,10 @@ module.exports = class JSFrame {
       server.serverCanvas.height = height;
     };
 
+    /**
+     *
+     * @param {fs.PathLike} path
+     */
     this.setIcon = (path) => {
       if (fs.existsSync(path)) {
         server.write(["icon", fs.realpathSync(path)]);
@@ -70,7 +87,10 @@ module.exports = class JSFrame {
         server.EventManager
       );
     };
-
+    /**
+     *
+     * @param {MouseCollider} mouseCollider
+     */
     this.removeMouseCollider = (mouseCollider) => {
       server.write(["mouseCollider", "remove", mouseCollider.id]);
     };

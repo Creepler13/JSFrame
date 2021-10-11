@@ -79,8 +79,8 @@ public class Client {
 				this.imgSocket.send(pack);
 				messageBuffer = "";
 			} catch (IOException | IllegalArgumentException e) {
-				System.out.println("messageBuffer that caused error " + messageBuffer);
-				e.printStackTrace();
+				// TODO FIX THIS SHIT  System.out.println("messageBuffer that caused error " + messageBuffer);
+				//e.printStackTrace();
 			}
 		}
 	}
