@@ -1,5 +1,6 @@
 const Server = require("./Server");
 const { loadImage } = require("canvas");
+const test = require("canvas");
 const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
 module.exports = class JSFrame {
@@ -14,16 +15,34 @@ module.exports = class JSFrame {
   constructor(x, y, width, height, hide) {
     this.loadImage = loadImage;
 
+    /**
+     *
+     * @returns {number}
+     */
     this.getWidth = () => {
       return server.canvas.width;
     };
 
+    /**
+     * @returns {number}
+     */
     this.getHeight = () => {
       return server.canvas.height;
     };
 
+    /**
+     * @returns {test.Canvas}
+     */
     this.getCanvas = () => {
       return server.canvas;
+    };
+
+    /**
+     * @param {number} newCanvasWidth
+     * @param {number} newCanvasHeight
+     */
+    this.setCanvasSize = (newCanvasWidth, newCanvasHeight) => {
+      server.setCanvasSize(newCanvasWidth, newCanvasHeight);
     };
 
     /**
@@ -40,16 +59,23 @@ module.exports = class JSFrame {
       server.update(server);
     };
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     this.setPosition = (x, y) => {
       server.write(["position", x, y]);
     };
 
-    this.setSize = (width, height) => {
+    /**
+     *
+     * @param {number} width
+     * @param {number} height
+     * @param {Boolean} [canvasSize=false]
+     */
+    this.setSize = (width, height,canvasSize) => {
       server.write(["size", width, height]);
-      server.canvas.width = width;
-      server.canvas.height = height;
-      server.serverCanvas.width = width;
-      server.serverCanvas.height = height;
+   if(canvasSize) server.setCanvasSize(width,height);
     };
 
     /**
@@ -67,6 +93,14 @@ module.exports = class JSFrame {
     };
 
     let MouseColliderIds = 0;
+    /**
+     *
+     * @param {number} x
+     * @param {number} y
+     * @param {number} width
+     * @param {number} height
+     * @returns {MouseCollider} MouseCollider
+     */
     this.createMouseCollider = (x, y, width, height) => {
       MouseColliderIds++;
       server.write([

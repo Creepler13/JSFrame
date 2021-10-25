@@ -2,21 +2,37 @@ let config = require("../config.json");
 const fs = require("fs");
 const FrameEventHandler = require("./FrameEventHandler");
 const MouseColliderEventHandler = require("./MouseColliderEventHandler");
+const Server = require("../Server");
 
 module.exports = class EventHandlerManager {
   handlers = {};
 
+  /**
+   *
+   * @param {Server} server
+   */
   constructor(server) {
     this.server = server;
     this.handlers.frame = new FrameEventHandler(server);
     this.handlers.mouseCollider = new MouseColliderEventHandler(server);
   }
 
+  /**
+   *
+   * @param {String} type
+   * @param {String} event
+   * @param {Function} callBack
+   * @param {*} option
+   */
   addListener(type, event, callBack, option) {
     if (this.handlers[type])
       this.handlers[type].addListener(event, callBack, option);
   }
 
+  /**
+   *
+   * @param {String} data
+   */
   eventCall(data) {
     let split = (data + "").trim().split(",");
     let type = split.shift();

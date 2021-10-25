@@ -57,8 +57,20 @@ public class Client {
 				background = image;
 				g2d = image.createGraphics();
 				window.JBC.setBackground(background);
+			} else if (background.getWidth() != image.getWidth() || background.getHeight() != image.getHeight()) {
+				BufferedImage tempBackGround = new BufferedImage(image.getWidth(), image.getHeight(),
+						BufferedImage.TYPE_INT_ARGB);
+				g2d = tempBackGround.createGraphics();
+
+				g2d.drawImage(background, 0, 0, background.getWidth(), background.getHeight(), 0, 0,
+						background.getWidth(), background.getHeight(), null);
+				g2d.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), 0, 0, image.getWidth(),
+						image.getHeight(), null);
+
+				background = tempBackGround;
 			} else {
 				int width = image.getWidth(), heigth = image.getHeight();
+				System.out.println(width + " " + heigth);
 				g2d.drawImage(image, 0, 0, width, heigth, 0, 0, width, heigth, null);
 			}
 			window.JBC.setBackground(background);
@@ -79,8 +91,9 @@ public class Client {
 				this.imgSocket.send(pack);
 				messageBuffer = "";
 			} catch (IOException | IllegalArgumentException e) {
-				// TODO FIX THIS SHIT  System.out.println("messageBuffer that caused error " + messageBuffer);
-				//e.printStackTrace();
+				// TODO FIX THIS SHIT System.out.println("messageBuffer that caused error " +
+				// messageBuffer);
+				// e.printStackTrace();
 			}
 		}
 	}

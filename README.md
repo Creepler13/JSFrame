@@ -62,6 +62,7 @@ setInterval(() => {
 - [JSFrame#on()](#on)
 - [JSFrame#setPosition()](#setposition)
 - [JSFrame#setSize()](#setsize)
+- [JSFrame#setCanvasSize()](#setcanvassize)
 - [JSFrame#show()](#show)
 - [JSFrame#setIcon()](#seticon)
 - [JSFrame#createMouseCollider()](#createremovemousecollider)
@@ -149,10 +150,27 @@ const JSFrame = require("jsframe.jar");
 
 let frame = new JSFrame(0, 0, 500, 500);
 
-frame.setPosition(width, height);
+frame.setSize(width, height);
+
+//optional if you want to have the canvas change to the same size as the frame (default=false)
+
+frame.setSize(width, height, true);
 ```
 
 Also works on [MouseCollider](#mousecollider)
+
+### setCanvasSize()
+
+Sets the size of the the Canvas without changing the size of the frame.
+You need to regenerate the context of the Canvas after resizing it.
+
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(0, 0, 500, 500);
+
+frame.setCanvasSize(width, height);
+```
 
 ### show()
 

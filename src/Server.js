@@ -5,6 +5,14 @@ const { createCanvas } = require("canvas");
 const EventHandlerManager = require("./handlers/EventHandlerManager");
 
 module.exports = class Server {
+  /**
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {Boolean} hideOnReady
+   */
   constructor(x, y, width, height, hideOnReady) {
     this.width = width ? width : 500;
     this.height = height ? height : 500;
@@ -13,10 +21,7 @@ module.exports = class Server {
     this.bufferSize = config.buffersize;
     this.ready = false;
     this.preReadyBuffer = [];
-    this.canvas = createCanvas(this.width, this.height);
-    this.serverCanvas = createCanvas(this.width, this.height);
-    this.g = this.canvas.getContext("2d");
-    this.gS = this.serverCanvas.getContext("2d");
+    this.setCanvasSize(this.width, this.height);
     this.lastFrame = this.g.getImageData(
       0,
       0,
@@ -152,5 +157,14 @@ module.exports = class Server {
     } else {
       this.preReadyBuffer.push(msg);
     }
+  }
+
+  setCanvasSize(width, height) {
+    this.canvasWidth = width;
+    this.canvasHeight = height;
+    this.canvas = createCanvas(this.canvasWidth, this.canvasHeight);
+    this.serverCanvas = createCanvas(this.canvasWidth, this.canvasHeight);
+    this.g = this.canvas.getContext("2d");
+    this.gS = this.serverCanvas.getContext("2d");
   }
 };
