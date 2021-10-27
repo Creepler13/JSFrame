@@ -10,7 +10,7 @@ module.exports = class JSFrame {
    * @param {Number} y
    * @param {Number} width
    * @param {Number} height
-   * @param {Boolean?} hide
+   * @param {Boolean} [hide=false]
    */
   constructor(x, y, width, height, hide) {
     this.loadImage = loadImage;
@@ -73,9 +73,9 @@ module.exports = class JSFrame {
      * @param {number} height
      * @param {Boolean} [canvasSize=false]
      */
-    this.setSize = (width, height,canvasSize) => {
+    this.setSize = (width, height, canvasSize) => {
       server.write(["size", width, height]);
-   if(canvasSize) server.setCanvasSize(width,height);
+      if (canvasSize) server.setCanvasSize(width, height);
     };
 
     /**

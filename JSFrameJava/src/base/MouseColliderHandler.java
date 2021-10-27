@@ -15,6 +15,7 @@ public class MouseColliderHandler {
 	}
 
 	public void action(String[] split) {
+
 		int id = Integer.parseInt(split[2]);
 		switch (split[1]) {
 		case "add":
@@ -38,7 +39,7 @@ public class MouseColliderHandler {
 					if (((MouseColliderEvent) e).getId() == id)
 						((MouseColliderEvent) e).setState(split[3]);
 			}
-
+			break;
 		case "size":
 			for (MouseListener e : this.client.window.JBC.getMouseListeners()) {
 				if (e.getClass() == MouseColliderEvent.class)

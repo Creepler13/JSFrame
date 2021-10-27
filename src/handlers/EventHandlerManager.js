@@ -7,6 +7,8 @@ const Server = require("../Server");
 module.exports = class EventHandlerManager {
   handlers = {};
 
+  eventCallsReceived = {};
+
   /**
    *
    * @param {Server} server
@@ -25,31 +27,43 @@ module.exports = class EventHandlerManager {
    * @param {*} option
    */
   addListener(type, event, callBack, option) {
-    if (this.handlers[type])
+    if (this.handlers[type]) {
       this.handlers[type].addListener(event, callBack, option);
+      this.server.write(["activateEvent", event]);
+    }
   }
 
   /**
    *
-   * @param {String} data
+   * @param {Object} eventConfig eventConfig
+   *    @param {String} eventConfig.type type
+   *    @param {String} eventConfig.name name
+   *
+   * @param {Object} data data
+   *    @param {*} data.*
    */
-  eventCall(data) {
-    let split = (data + "").trim().split(",");
-    let type = split.shift();
 
-    switch (type) {
-      case "port":
-        this.server.socket.connect(parseInt(split[0]));
-        break;
+  eventCall(eventConfig, data) {
+    switch (eventConfig.type) {
       case "bufferfix":
-        config.buffersize = parseInt(split[0]);
+        if (!this.eventCallsReceived["bufferfix"])
+          //debug
+          this.eventCallsReceived["bufferfix"] = 0; //debug
+        this.eventCallsReceived["bufferfix"]++; //debug
+
+        config.buffersize = data;
         fs.writeFileSync(__dirname + "/../config.json", JSON.stringify(config));
-        break;
+        return;
     }
 
-    if (this.handlers[type])
-      this.handlers[type].eventCall(split, {
-        event: { type: type, name: split[0] },
-      });
+    if (this.handlers[eventConfig.type]) {
+      if (!this.eventCallsReceived[eventConfig.type])
+        this.eventCallsReceived[eventConfig.type] = {}; //debug
+      if (!this.eventCallsReceived[eventConfig.type][eventConfig.name])
+        this.eventCallsReceived[eventConfig.type][eventConfig.name] = 0;
+      this.eventCallsReceived[eventConfig.type][eventConfig.name]++; //debug
+
+      this.handlers[eventConfig.type].eventCall(eventConfig, data);
+    }
   }
 };

@@ -5,44 +5,47 @@ module.exports = class FrameEventHandler {
 
   Events = {};
 
-  addListener(event, callBack, option) {
+  addListener(event, callBack) {
     this.Events[event] = callBack;
   }
 
-  eventCall(split, event) {
-    switch (split[0]) {
+  eventCall(eventConfig, data) {
+    switch (eventConfig.name) {
       case "close":
         clearInterval(this.server.interval);
         this.server.ls.kill();
         this.server.socket.close();
-        if (this.Events.closed) this.Events.closed(event);
+        if (this.Events.closed) this.Events.closed(eventConfig);
         return;
-      case "bpsa":
-        if (this.Events[split[0]])
-          this.Events[split[0]]({
-            bpsa: parseFloat(split[1]),
-            maxbpsa:parseFloat(split[2]),
-            event,
+      case "port":
+        this.server.socket.connect(data.port);
+        return;
+      case "debug":
+        if (this.Events[eventConfig.name])
+          this.Events[eventConfig.name]({
+            bpsa: this.server.averageBufferSizePerSec,
+            maxbpsa: this.server.maxAverageBufferSizePerSec,
+            eventCallsReceived: this.server.EventManager.eventCallsReceived,
           });
         return;
     }
 
-    if (this.Events[split[0]]) {
-      if (split[0].startsWith("mouse")) {
-        this.Events[split[0]]({
-          x: parseInt(split[1]),
-          y: parseInt(split[2]),
-          button: split[3] ? parseInt(split[3]) : 0,
-          event,
+    if (this.Events[eventConfig.name]) {
+      if (eventConfig.name.startsWith("mouse")) {
+        this.Events[eventConfig.name]({
+          x: parseInt(data.x),
+          y: parseInt(data.y),
+          button: data.button ? data.button : 0,
+          eventConfig,
         });
-      } else if (split[0].startsWith("key")) {
-        this.Events[split[0]]({
-          keyCode: parseInt(split[1]),
-          key: split[2],
-          event,
+      } else if (eventConfig.name.startsWith("key")) {
+        this.Events[eventConfig.name]({
+          keyCode: data.keyCode,
+          key: data.key,
+          eventConfig,
         });
       } else {
-        this.Events[split[0]](event);
+        this.Events[eventConfig.name](eventConfig);
       }
     }
   }

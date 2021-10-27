@@ -14,12 +14,12 @@ public class KeyEvent implements KeyListener {
 
 	@Override
 	public void keyPressed(java.awt.event.KeyEvent e) {
-		this.server.write("frame,keyPressed," + e.getKeyCode() + "," + e.getKeyChar());
+		this.server.makeEventCall("frame", "keyPressed", "keyCode", e.getKeyCode(), "key", e.getKeyChar());
 	}
 
 	@Override
 	public void keyReleased(java.awt.event.KeyEvent e) {
-		this.server.write("frame,keyReleased," + e.getKeyCode() + "," + e.getKeyChar());
+		this.server.makeEventCall("frame", "keyReleased", "keyCode", e.getKeyCode(), "key", e.getKeyChar());
 	}
 
 	@Override

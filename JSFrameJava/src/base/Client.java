@@ -9,6 +9,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -29,12 +30,15 @@ public class Client {
 
 	public Client(int port, int bufferSize, int x, int y, int width, int height, Boolean hideOnReady)
 			throws IOException {
+
+		activatedEvents.add("port");
+
 		this.window = new Window(x, y, width, height, this, hideOnReady);
 
 		this.imgSocket = new DatagramSocket();
 		this.imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
-		String message = "port," + this.imgSocket.getLocalPort();
-		this.imgSocket.send(new DatagramPacket(message.getBytes(), message.getBytes().length));
+		makeEventCall("frame", "port", "port", this.imgSocket.getLocalPort());
+		sendMessageBuffer();
 		this.buffer = new byte[bufferSize];
 		this.mouseColliderHandler = new MouseColliderHandler(this);
 	}
@@ -48,7 +52,7 @@ public class Client {
 				image = ImageIO.read(bis);
 			} catch (javax.imageio.IIOException e) {
 				this.buffer = new byte[this.buffer.length * 2];
-				this.write("bufferfix," + this.buffer.length);
+				this.makeEventCall("frame", "bufferfix", this.buffer.length);
 				return;
 			}
 			bis.close();
@@ -70,7 +74,6 @@ public class Client {
 				background = tempBackGround;
 			} else {
 				int width = image.getWidth(), heigth = image.getHeight();
-				System.out.println(width + " " + heigth);
 				g2d.drawImage(image, 0, 0, width, heigth, 0, 0, width, heigth, null);
 			}
 			window.JBC.setBackground(background);
@@ -102,6 +105,35 @@ public class Client {
 		messageBuffer = messageBuffer + message + "%";
 	}
 
+	private ArrayList<String> activatedEvents = new ArrayList<>();
+
+	public void makeEventCall(String type, String name, Object... values) {
+		if (!activatedEvents.contains(name))
+			return;
+
+		String event = "{\"config\":{\"type\":\"" + type + "\",\"name\":\"" + name + "\"}";
+
+		if (values.length > 0) {
+			event = event + ",\"data\":{";
+			for (int i = 0; i < values.length; i = i + 2) {
+				String key = (String) values[i];
+				String value = values[i + 1] + "";
+				if (value instanceof String)
+					event = event + "\"" + key + "\":\"" + value + "\",";
+				else
+					event = event + "\"" + key + "\":" + value + ",";
+
+			}
+
+			event = event.substring(0, event.length() - 1);
+			event = event + "}";
+
+		}
+		event = event + "}";
+
+		write(event);
+	}
+
 	public void messageRecieved(byte[] buffer) {
 		int i = 0;
 		for (byte b : buffer) {
@@ -109,11 +141,13 @@ public class Client {
 				break;
 			i++;
 		}
-
 		String[] split = new String(buffer, 1, i - 1).split(",");
 		switch (split[0]) {
 		case "mouseCollider":
 			this.mouseColliderHandler.action(split);
+			break;
+		case "activateEvent":
+			activatedEvents.add(split[1]);
 			break;
 		case "show":
 			this.window.frame.setVisible(true);

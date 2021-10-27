@@ -41,7 +41,7 @@ module.exports = class MouseCollider {
      * @param {*} callBack
      */
     this.on = (event, callBack) => {
-      EventManager.addListener("mouseCollider", event, callBack, [id]);
+      EventManager.addListener("mouseCollider", event, callBack, id);
     };
 
     /**

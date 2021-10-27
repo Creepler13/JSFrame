@@ -60,8 +60,8 @@ frame.on("keyReleased", (e) => {
   MC.enabled(!MC.isEnabled);
 });
 
-frame.on("bpsa", (e) => {
-  console.log("bpsa: " + e.bpsa + " highscore " + e.maxbpsa);
+frame.on("debug", (e) => {
+ console.log(e);
 });
 
 frame.on("closed", (e) => {

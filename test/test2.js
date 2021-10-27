@@ -1,6 +1,6 @@
 const JSFrame = require("../src/JsFrame.js");
 
-let frame = new JSFrame(2, 2, true);
+let frame = new JSFrame(2, 2);
 
 let g = frame.getCanvas().getContext("2d");
 
@@ -10,7 +10,6 @@ frame.on("ready", () => {
   frame.update();
   frame.update();
   frame.show();
-
   setTimeout(() => {
     process.exit(0);
   }, 580);

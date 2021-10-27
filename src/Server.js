@@ -3,6 +3,7 @@ let config = require("./config.json");
 const dgram = require("dgram");
 const { createCanvas } = require("canvas");
 const EventHandlerManager = require("./handlers/EventHandlerManager");
+const { Console } = require("console");
 
 module.exports = class Server {
   /**
@@ -51,7 +52,7 @@ module.exports = class Server {
       ]);
 
       this.ls.stdout.on("data", (data) => {
-        console.log("Debug:" + data);
+        console.log("Frame log:" + data);
       });
 
       this.ls.stderr.on("data", (data) => {
@@ -66,7 +67,8 @@ module.exports = class Server {
     this.socket.on("message", (msg, rinfo) => {
       if (rinfo.port != this.socket.address().port)
         (msg + "").split("%").forEach((message) => {
-          this.EventManager.eventCall(message);
+          let jso = JSON.parse(message);
+          this.EventManager.eventCall(jso.config, jso.data);
         });
     });
 
@@ -74,7 +76,7 @@ module.exports = class Server {
       this.interval = setInterval(() => {
         this.update(this);
       }, 16);
-      this.EventManager.eventCall("frame,ready");
+      this.EventManager.eventCall({ type: "frame", name: "ready" });
       this.ready = true;
       this.writePreReadyBuffer();
     });
@@ -82,23 +84,23 @@ module.exports = class Server {
     this.socket.bind();
   }
 
-  update(Server) {
-    Server.EventManager.eventCall("frame,update");
+  update(server) {
+    server.EventManager.eventCall({ type: "frame", name: "update" });
 
-    let currentFrame = Server.g.getImageData(
+    let currentFrame = server.g.getImageData(
       0,
       0,
-      Server.canvas.width,
-      Server.canvas.height
+      server.canvas.width,
+      server.canvas.height
     );
-    let frameDiff = Server.gS.createImageData(currentFrame);
+    let frameDiff = server.gS.createImageData(currentFrame);
 
     for (let i = 0; i < currentFrame.data.length; i = i + 4) {
       if (
-        currentFrame.data[i] != Server.lastFrame.data[i] ||
-        currentFrame.data[i + 1] != Server.lastFrame.data[i + 1] ||
-        currentFrame.data[i + 2] != Server.lastFrame.data[i + 2] ||
-        currentFrame.data[i + 3] != Server.lastFrame.data[i + 3]
+        currentFrame.data[i] != server.lastFrame.data[i] ||
+        currentFrame.data[i + 1] != server.lastFrame.data[i + 1] ||
+        currentFrame.data[i + 2] != server.lastFrame.data[i + 2] ||
+        currentFrame.data[i + 3] != server.lastFrame.data[i + 3]
       ) {
         frameDiff.data[i] = currentFrame.data[i];
         frameDiff.data[i + 1] = currentFrame.data[i + 1];
@@ -107,31 +109,28 @@ module.exports = class Server {
       }
     }
 
-    Server.gS.putImageData(frameDiff, 0, 0);
+    server.gS.putImageData(frameDiff, 0, 0);
 
-    let buffer = Server.serverCanvas.toBuffer();
+    let buffer = server.serverCanvas.toBuffer();
 
     let secs = process.hrtime()[0];
 
-    if (secs != Server.lastAverageBufferSizePerSecReset) {
-      if (Server.maxAverageBufferSizePerSec < Server.averageBufferSizePerSec)
-        Server.maxAverageBufferSizePerSec = Server.averageBufferSizePerSec;
-      Server.EventManager.eventCall(
-        "frame,bpsa," +
-          Server.averageBufferSizePerSec +
-          "," +
-          Server.maxAverageBufferSizePerSec
+    if (secs != server.lastAverageBufferSizePerSecReset) {
+      if (server.maxAverageBufferSizePerSec < server.averageBufferSizePerSec)
+        server.maxAverageBufferSizePerSec = server.averageBufferSizePerSec;
+      server.EventManager.eventCall(
+        { type: "frame", name: "debug" }
       );
-      Server.averageBufferSizePerSec = buffer.length;
-      Server.lastAverageBufferSizePerSecReset = secs;
+      server.averageBufferSizePerSec = buffer.length;
+      server.lastAverageBufferSizePerSecReset = secs;
     } else {
-      Server.averageBufferSizePerSec =
-        (Server.averageBufferSizePerSec + buffer.length) / 2;
+      server.averageBufferSizePerSec =
+        (server.averageBufferSizePerSec + buffer.length) / 2;
     }
 
-    Server.writeImg(buffer);
+    server.writeImg(buffer);
 
-    Server.lastFrame = currentFrame;
+    server.lastFrame = currentFrame;
   }
 
   writeImg(buffer) {
