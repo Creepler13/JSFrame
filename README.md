@@ -6,9 +6,8 @@ JSFrame is a easy way to display something with nodejs, without the need of a br
 
 ### NodeJs
 
-```bash
-Version >= 15.*
-```
+It is recommended to only use LTS version of nodejs.
+Otehrwise, instalation installation fail.
 
 ### Java
 
