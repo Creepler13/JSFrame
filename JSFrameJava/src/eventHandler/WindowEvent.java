@@ -23,7 +23,7 @@ public class WindowEvent implements WindowListener {
 
 	@Override
 	public void windowClosing(java.awt.event.WindowEvent e) {
-		this.server.makeEventCall("frame", "closed");
+		server.eventHandler.makeEventCall("frame", "closed");
 	}
 
 	@Override
@@ -32,12 +32,12 @@ public class WindowEvent implements WindowListener {
 
 	@Override
 	public void windowDeiconified(java.awt.event.WindowEvent e) {
-		this.server.makeEventCall("frame", "normalized");
+		server.eventHandler.makeEventCall("frame", "normalized");
 	}
 
 	@Override
 	public void windowIconified(java.awt.event.WindowEvent e) {
-		this.server.makeEventCall("frame", "minimized");
+		server.eventHandler.makeEventCall("frame", "minimized");
 	}
 
 	@Override

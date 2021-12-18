@@ -60,6 +60,7 @@ setInterval(() => {
 - [JSFrame#getHeight()](#getwidthheight)
 - [JSFrame#on()](#on)
 - [JSFrame#setPosition()](#setposition)
+- [JSFrame#getPosition()](#getposition)
 - [JSFrame#setSize()](#setsize)
 - [JSFrame#setCanvasSize()](#setcanvassize)
 - [JSFrame#show()](#show)
@@ -140,6 +141,18 @@ frame.setPosition(x, y);
 
 Also works on [MouseCollider](#mousecollider)
 
+### getPosition()
+
+Returns the position
+
+```javascript
+const JSFrame = require("jsframe.jar");
+
+let frame = new JSFrame(0, 0, 500, 500);
+
+frame.getPosition(); // returns {x: XPosition, y: YPosition}
+```
+
 ### setSize()
 
 Sets the size
@@ -202,11 +215,13 @@ frame.on("ready", () => {}); // run when the frame is ready (mostly not needed)
 
 frame.on("closed", () => {}); // run when the frame is closed
 
-frame.on("update", () => {}); // run everytime BEFORE the frame updates
+frame.on("update", () => {}); // run everytime BEFORE the frame updates/is redrawn
 
 frame.on("minimized", () => {}); // run when the frame is minimized
 
 frame.on("normalized", () => {}); // run when the frame goes back to normal after being minimized
+
+frame.on("positionChanged", () => {}); // run when the frame is moved. returns {x: XPosition, y: YPosition, event: { type: "frame", name: "positionChanged"}}
 ```
 
 ### KeyEvents

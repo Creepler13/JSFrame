@@ -27,6 +27,8 @@ public class Window {
 		frame.add(JBC);
 		if (!hideOnReady)
 			frame.setVisible(true);
+		
+	
 	}
 
 }

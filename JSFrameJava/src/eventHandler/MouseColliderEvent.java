@@ -43,8 +43,8 @@ public class MouseColliderEvent implements MouseListener {
 		if (getState())
 			if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
 					&& e.getY() < this.y + this.height)
-				this.MCH.client.makeEventCall("mouseCollider", "mousePressed", "id", id, "x", e.getX(), "y", e.getY(),
-						"button", e.getButton());
+				this.MCH.client.eventHandler.makeEventCall("mouseCollider", "mousePressed", "id", id, "x", e.getX(),
+						"y", e.getY(), "button", e.getButton());
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public class MouseColliderEvent implements MouseListener {
 		if (getState())
 			if (e.getX() >= this.x && e.getX() < this.x + this.width && e.getY() >= this.y
 					&& e.getY() < this.y + this.height)
-				this.MCH.client.makeEventCall("mouseCollider", "mouseReleased", "id", id, "x", e.getX(), "y", e.getY(),
-						"button", e.getButton());
+				this.MCH.client.eventHandler.makeEventCall("mouseCollider", "mouseReleased", "id", id, "x", e.getX(),
+						"y", e.getY(), "button", e.getButton());
 	}
 
 	@Override

@@ -3,15 +3,15 @@ package base;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+
+import eventHandler.MainEventHandler;
 
 public class Client {
 
@@ -26,21 +26,25 @@ public class Client {
 	public BufferedImage background;
 	public Graphics2D g2d;
 
-	private MouseColliderHandler mouseColliderHandler;
+	public int lastX, lastY;
+
+	public MainEventHandler eventHandler = new MainEventHandler(this);
 
 	public Client(int port, int bufferSize, int x, int y, int width, int height, Boolean hideOnReady)
 			throws IOException {
 
-		activatedEvents.add("port");
+		eventHandler.activateEvent("port");
+
+		lastX = x;
+		lastY = y;
 
 		this.window = new Window(x, y, width, height, this, hideOnReady);
 
 		this.imgSocket = new DatagramSocket();
 		this.imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
-		makeEventCall("frame", "port", "port", this.imgSocket.getLocalPort());
+		eventHandler.makeEventCall("frame", "port", "port", this.imgSocket.getLocalPort());
 		sendMessageBuffer();
 		this.buffer = new byte[bufferSize];
-		this.mouseColliderHandler = new MouseColliderHandler(this);
 	}
 
 	public void update() throws IOException {
@@ -52,10 +56,19 @@ public class Client {
 				image = ImageIO.read(bis);
 			} catch (javax.imageio.IIOException e) {
 				this.buffer = new byte[this.buffer.length * 2];
-				this.makeEventCall("frame", "bufferfix", this.buffer.length);
+				eventHandler.makeEventCall("frame", "bufferfix", this.buffer.length);
 				return;
 			}
 			bis.close();
+
+			if (window.frame.getX() != lastX || window.frame.getY() != lastY) {
+				lastX = window.frame.getX();
+				lastY = window.frame.getY();
+				
+				System.out.println(lastX+ " "+ lastX);
+				
+				eventHandler.makeEventCall("frame", "positionChanged", "x", lastX, "y", lastY);
+			}
 
 			if (background == null) {
 				background = image;
@@ -105,35 +118,6 @@ public class Client {
 		messageBuffer = messageBuffer + message + "%";
 	}
 
-	private ArrayList<String> activatedEvents = new ArrayList<>();
-
-	public void makeEventCall(String type, String name, Object... values) {
-		if (!activatedEvents.contains(name))
-			return;
-
-		String event = "{\"config\":{\"type\":\"" + type + "\",\"name\":\"" + name + "\"}";
-
-		if (values.length > 0) {
-			event = event + ",\"data\":{";
-			for (int i = 0; i < values.length; i = i + 2) {
-				String key = (String) values[i];
-				String value = values[i + 1] + "";
-				if (value instanceof String)
-					event = event + "\"" + key + "\":\"" + value + "\",";
-				else
-					event = event + "\"" + key + "\":" + value + ",";
-
-			}
-
-			event = event.substring(0, event.length() - 1);
-			event = event + "}";
-
-		}
-		event = event + "}";
-
-		write(event);
-	}
-
 	public void messageRecieved(byte[] buffer) {
 		int i = 0;
 		for (byte b : buffer) {
@@ -142,37 +126,9 @@ public class Client {
 			i++;
 		}
 		String[] split = new String(buffer, 1, i - 1).split(",");
-		switch (split[0]) {
-		case "mouseCollider":
-			this.mouseColliderHandler.action(split);
-			break;
-		case "activateEvent":
-			activatedEvents.add(split[1]);
-			break;
-		case "show":
-			this.window.frame.setVisible(true);
-			break;
-		case "icon":
-			try {
-				this.window.frame.setIconImage(ImageIO.read(new File(split[1])));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			break;
-		case "position":
-			this.window.frame.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]),
-					this.window.frame.getWidth(), this.window.frame.getHeight());
-			this.window.JBC.setBounds(Integer.parseInt(split[1]), Integer.parseInt(split[2]),
-					this.window.frame.getWidth(), this.window.frame.getHeight());
-			break;
-		case "size":
-			this.window.frame.setBounds(this.window.frame.getX(), this.window.frame.getY(),
-					Integer.parseInt(split[1]) + 16, Integer.parseInt(split[2]) + 39);
-			this.window.JBC.setBounds(this.window.frame.getX(), this.window.frame.getY(),
-					Integer.parseInt(split[1]) + 16, Integer.parseInt(split[2]) + 39);
-			this.background = null;
-			break;
-		}
+
+		eventHandler.handle(split[0], split);
+
 	}
 
 }

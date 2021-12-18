@@ -14,8 +14,8 @@ public class MouseColliderMotionEvent implements MouseMotionListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		this.MCE.MCH.client.makeEventCall("mouseCollider", "mouseDragged", "id", this.MCE.id, "x", e.getX(), "y",
-				e.getY(), "button", e.getButton());
+		this.MCE.MCH.client.eventHandler.makeEventCall("mouseCollider", "mouseDragged", "id", this.MCE.id, "x",
+				e.getX(), "y", e.getY(), "button", e.getButton());
 	}
 
 	public boolean getState() {
@@ -28,22 +28,22 @@ public class MouseColliderMotionEvent implements MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		this.MCE.MCH.client.makeEventCall("mouseCollider", "mouseMoved", "id", this.MCE.id, "x", e.getX(), "y",
-				e.getY(), "button", e.getButton());
+		this.MCE.MCH.client.eventHandler.makeEventCall("mouseCollider", "mouseMoved", "id", this.MCE.id, "x", e.getX(),
+				"y", e.getY(), "button", e.getButton());
 
 		if (getState())
 			if (e.getX() >= this.MCE.x && e.getX() < this.MCE.x + this.MCE.width && e.getY() >= this.MCE.y
 					&& e.getY() < this.MCE.y + this.MCE.height) {
 				if (!this.isIn) {
 					this.isIn = true;
-					this.MCE.MCH.client.makeEventCall("mouseCollider", "mouseEntered", "id", this.MCE.id, "x", e.getX(),
-							"y", e.getY(), "button", e.getButton());
+					this.MCE.MCH.client.eventHandler.makeEventCall("mouseCollider", "mouseEntered", "id", this.MCE.id,
+							"x", e.getX(), "y", e.getY(), "button", e.getButton());
 				}
 			} else {
 				if (this.isIn) {
 					this.isIn = false;
-					this.MCE.MCH.client.makeEventCall("mouseCollider", "mouseExited", "id", this.MCE.id, "x", e.getX(),
-							"y", e.getY(), "button", e.getButton());
+					this.MCE.MCH.client.eventHandler.makeEventCall("mouseCollider", "mouseExited", "id", this.MCE.id,
+							"x", e.getX(), "y", e.getY(), "button", e.getButton());
 				}
 			}
 

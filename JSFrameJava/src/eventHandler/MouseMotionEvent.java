@@ -17,7 +17,7 @@ public class MouseMotionEvent implements MouseMotionListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		this.server.makeEventCall("frame", "mouseDragged", "x", e.getX(), "y", e.getY(), "button",
+		server.eventHandler.makeEventCall("frame", "mouseDragged", "x", e.getX(), "y", e.getY(), "button",
 				(SwingUtilities.isLeftMouseButton(e) ? 1
 						: SwingUtilities.isRightMouseButton(e) ? 3 : SwingUtilities.isMiddleMouseButton(e) ? 2 : 0));
 
@@ -25,7 +25,7 @@ public class MouseMotionEvent implements MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		this.server.makeEventCall("frame", "mouseMoved", "x", e.getX(), "y", e.getY(), "button",
+		server.eventHandler.makeEventCall("frame", "mouseMoved", "x", e.getX(), "y", e.getY(), "button",
 				(SwingUtilities.isLeftMouseButton(e) ? 1
 						: SwingUtilities.isRightMouseButton(e) ? 3 : SwingUtilities.isMiddleMouseButton(e) ? 2 : 0));
 

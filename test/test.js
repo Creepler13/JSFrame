@@ -35,8 +35,9 @@ frame.on("ready", () => {
   MC.on("mouseReleased", (e) => {
     ctx.fillStyle = "white";
     ctx.fillRect(50, 250, 150, 100);
-    frame.setCanvasSize(1000, 1000);
-    ctx = frame.getCanvas().getContext("2d");
+   // frame.setCanvasSize(1000, 1000);
+   frame.close(); 
+   ctx = frame.getCanvas().getContext("2d");
 
     frame.setSize(200, 200, true);
   });
@@ -56,12 +57,18 @@ frame.on("mouseReleased", (e) => {
   MC.setPosition(100, 100);
 });
 
+
+frame.on("positionChanged",(e)=>{
+ // console.log(e);
+})
+
 frame.on("keyReleased", (e) => {
+  console.log(frame.getPosition())
   MC.enabled(!MC.isEnabled);
 });
 
 frame.on("debug", (e) => {
- console.log(e);
+ //console.log(e);
 });
 
 frame.on("closed", (e) => {

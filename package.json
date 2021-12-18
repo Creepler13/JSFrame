@@ -1,33 +1,37 @@
 {
-  "name": "jsframe.jar",
-  "version": "1.1.28",
-  "description": "JSFrame is a easy way to display something with nodejs, without the need of a browser",
-  "main": "src/JSFrame.js",
-  "author": "Creepler13",
-  "license": "ISC",
-  "dependencies": {
-    "canvas": "^2.7.0",
-    "child_process": "^1.0.2",
-    "fs": "*"
-  },
-  "files": [
-    "src/"
-  ],
-  "scripts": {
-    "git": "git log --graph --oneline --all",
-    "postinstall": "node src/javaI.js",
-    "test": "node test/test.js",
-    "test2": "node test/test2.js"
-  },
-  "repository": "https://github.com/Creepler13/JSFrame.git",
-  "keywords": [
-    "jsframe",
-    "jframe",
-    "java",
-    "canvas",
-    "graphic",
-    "graphics",
-    "window",
-    "frame"
-  ]
+    "name": "jsframe.jar",
+    "version": "1.1.28",
+    "description": "JSFrame is a easy way to display something with nodejs, without the need of a browser",
+    "main": "src/JSFrame.js",
+    "author": "Creepler13",
+    "license": "ISC",
+    "dependencies": {
+        "canvas": "^2.7.0",
+        "child_process": "^1.0.2",
+        "fs": "*"
+    },
+    "files": [
+        "src/"
+    ],
+    "scripts": {
+        "git": "git log --graph --oneline --all",
+        "postinstall": "node src/javaI.js",
+        "test": "npm run build && node test/test.js ",
+        "test2": "npm run build && node test/test2.js",
+        "build": "cd JSFrameJava && javac -d bin src/base/*.java src/eventHandler/*.java && cd bin && jar uef base.Main ../../src/JSFrame.jar base/*.class eventHandler/*.class"
+    },
+    "repository": "https://github.com/Creepler13/JSFrame.git",
+    "keywords": [
+        "jsframe",
+        "jframe",
+        "java",
+        "canvas",
+        "graphic",
+        "graphics",
+        "window",
+        "frame"
+    ],
+    "devDependencies": {
+        "jest": "^27.4.5"
+    }
 }
