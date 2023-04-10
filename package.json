@@ -6,7 +6,7 @@
     "author": "Creepler13",
     "license": "ISC",
     "dependencies": {
-        "canvas": "^2.7.0",
+        "canvas": "^2.11.2",
         "child_process": "^1.0.2",
         "fs": "*"
     },
@@ -16,6 +16,7 @@
     "scripts": {
         "git": "git log --graph --oneline --all",
         "postinstall": "node src/javaI.js",
+        "testUpdateTimes": "jest",
         "test": "npm run build && node test/test.js ",
         "test2": "npm run build && node test/test2.js",
         "build": "cd JSFrameJava && javac -d bin src/base/*.java src/eventHandler/*.java && cd bin && jar uef base.Main ../../src/JSFrame.jar base/*.class eventHandler/*.class"

@@ -36,6 +36,16 @@ module.exports = class Server {
 
         this.EventManager = new EventHandlerManager(this);
 
+        this.EventManager.addListener("frame", "up", (e) => {
+            console.log(e);
+            this.update(this);
+        });
+
+        this.EventManager.addListener("frame", "ready", (e) => {
+            console.log(e);
+            this.update(this);
+        });
+
         this.socket.on("listening", () => {
             this.ls = spawn("java", [
                 "-jar",
@@ -63,17 +73,18 @@ module.exports = class Server {
         });
 
         this.socket.on("message", (msg, rinfo) => {
-            if (rinfo.port != this.socket.address().port)
+           if (rinfo.port != this.socket.address().port)
                 (msg + "").split("%").forEach((message) => {
                     let jso = JSON.parse(message);
+
                     this.EventManager.eventCall(jso.config, jso.data);
                 });
         });
 
         this.socket.on("connect", () => {
-            this.interval = setInterval(() => {
-                this.update(this);
-            }, 16);
+            //     this.interval = setInterval(() => {
+            //       this.update(this);
+            //  }, 16);
             this.EventManager.eventCall({ type: "frame", name: "ready" });
             this.ready = true;
             this.writePreReadyBuffer();
@@ -84,7 +95,7 @@ module.exports = class Server {
 
     update(server) {
         this.lastUpdateStart = process.uptime();
-        
+
         server.EventManager.eventCall({ type: "frame", name: "update" });
 
         let currentFrame = server.g.getImageData(0, 0, server.canvas.width, server.canvas.height);

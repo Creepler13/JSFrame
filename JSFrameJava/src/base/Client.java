@@ -43,6 +43,7 @@ public class Client {
 		this.imgSocket = new DatagramSocket();
 		this.imgSocket.connect(new InetSocketAddress("127.0.0.1", port));
 		eventHandler.makeEventCall("frame", "port", "port", this.imgSocket.getLocalPort());
+		eventHandler.makeEventCall("frame", "up");
 		sendMessageBuffer();
 		this.buffer = new byte[bufferSize];
 	}
@@ -57,6 +58,8 @@ public class Client {
 			} catch (javax.imageio.IIOException e) {
 				this.buffer = new byte[this.buffer.length * 2];
 				eventHandler.makeEventCall("frame", "bufferfix", this.buffer.length);
+				eventHandler.makeEventCall("frame", "up");
+				sendMessageBuffer();
 				return;
 			}
 			bis.close();
@@ -64,9 +67,9 @@ public class Client {
 			if (window.frame.getX() != lastX || window.frame.getY() != lastY) {
 				lastX = window.frame.getX();
 				lastY = window.frame.getY();
-				
-				System.out.println(lastX+ " "+ lastX);
-				
+
+				System.out.println(lastX + " " + lastX);
+
 				eventHandler.makeEventCall("frame", "positionChanged", "x", lastX, "y", lastY);
 			}
 
@@ -91,6 +94,7 @@ public class Client {
 			}
 			window.JBC.setBackground(background);
 			eventHandler.makeEventCall("frame", "up");
+			sendMessageBuffer();
 
 		} else {
 			messageRecieved(this.buffer);
@@ -102,6 +106,8 @@ public class Client {
 	private String messageBuffer = "";
 
 	private void sendMessageBuffer() {
+		System.out.println(messageBuffer);
+		
 		if (messageBuffer.length() > 0) {
 			try {
 				DatagramPacket pack = new DatagramPacket(messageBuffer.getBytes(), messageBuffer.getBytes().length - 1);

@@ -1,14 +1,7 @@
-module.exports = class FrameEventHandler {
-    constructor(server) {
-        this.server = server;
-    }
+const { run } = require("jest");
+const EventHandlerInterface = require("./EventHandlerInterFace");
 
-    Events = {};
-
-    addListener(event, callBack) {
-        this.Events[event] = callBack;
-    }
-
+module.exports = class FrameEventHandler extends EventHandlerInterface {
     eventCall(eventConfig, data) {
         switch (eventConfig.name) {
             case "close":
@@ -21,12 +14,11 @@ module.exports = class FrameEventHandler {
                 this.server.socket.connect(data.port);
                 return;
             case "debug":
-                if (this.Events[eventConfig.name])
-                    this.Events[eventConfig.name]({
-                        bpsa: this.server.averageBufferSizePerSec,
-                        maxbpsa: this.server.maxAverageBufferSizePerSec,
-                        eventCallsReceived: this.server.EventManager.eventCallsReceived,
-                    });
+                this.runCommand(eventConfig, {
+                    bpsa: this.server.averageBufferSizePerSec,
+                    maxbpsa: this.server.maxAverageBufferSizePerSec,
+                    eventCallsReceived: this.server.EventManager.eventCallsReceived,
+                });
                 return;
             case "positionChanged":
                 let x = parseInt(data.x);
@@ -35,37 +27,31 @@ module.exports = class FrameEventHandler {
                 this.server.x = x;
                 this.server.y = y;
 
-                if (this.Events[eventConfig.name]) {
-                    this.Events[eventConfig.name]({ x, y, eventConfig });
-                }
+                this.runCommand(eventConfig, { x, y });
 
                 break;
             case "up":
                 this.server.lastUpdateEnd = process.uptime();
-                if (this.Events[eventConfig.name]) {
-                    let tooktime = this.server.lastUpdateEnd - this.server.lastUpdateStart;
-                    this.Events[eventConfig.name]({ tooktime, eventConfig });
-                }
+
+                let tooktime = this.server.lastUpdateEnd - this.server.lastUpdateStart;
+                this.runCommand(eventConfig, { tooktime });
                 return;
         }
 
-        if (this.Events[eventConfig.name]) {
-            if (eventConfig.name.startsWith("mouse")) {
-                this.Events[eventConfig.name]({
-                    x: parseInt(data.x),
-                    y: parseInt(data.y),
-                    button: data.button ? data.button : 0,
-                    eventConfig,
-                });
-            } else if (eventConfig.name.startsWith("key")) {
-                this.Events[eventConfig.name]({
-                    keyCode: data.keyCode,
-                    key: data.key,
-                    eventConfig,
-                });
-            } else {
-                this.Events[eventConfig.name](eventConfig);
-            }
+        if (eventConfig.name.startsWith("mouse")) {
+            this.runCommand(eventConfig, {
+                x: parseInt(data.x),
+                y: parseInt(data.y),
+                button: data.button ? data.button : 0,
+            });
+        } else if (eventConfig.name.startsWith("key")) {
+            this.runCommand(eventConfig, {
+                keyCode: data.keyCode,
+                key: data.key,
+                eventConfig,
+            });
+        } else {
+            this.runCommand(eventConfig, {});
         }
     }
 };

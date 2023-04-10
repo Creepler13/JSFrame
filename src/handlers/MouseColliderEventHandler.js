@@ -1,23 +1,27 @@
-module.exports = class MouseColliderEventHandler {
-  constructor(server) {
-    this.server = server;
-  }
+const EventHandlerInterface = require("./EventHandlerInterFace");
 
-  Events = {};
+module.exports = class MouseColliderEventHandler extends EventHandlerInterface {
+    addListener(event, callBack, id) {
+        if (!this.Events[event]) this.Events[event] = {};
+        if (!this.Events[event][id]) this.Events[event][id] = [];
+        this.Events[event][id].push(callBack);
+    }
 
-  addListener(event, callBack, id) {
-    if (!this.Events[event]) this.Events[event] = {};
-    this.Events[event][id] = callBack;
-  }
+    runCommand(eventConfig, data) {
+        if (this.Events[eventConfig.name])
+            if (this.Events[eventConfig.name][eventConfig.mouseColliderID])
+                this.Events[eventConfig.name][eventConfig.mouseColliderID].forEach((element) => {
+                    data.eventConfig = eventConfig;
+                    element(data);
+                });
+    }
 
-  eventCall(eventConfig, data) {
-    if (this.Events[eventConfig.name])
-      if (this.Events[eventConfig.name][data.id])
-        this.Events[eventConfig.name][data.id]({
-          x: data.x,
-          y: data.y,
-          button: data.button ? data.button : 0,
-          eventConfig,
+    eventCall(eventConfig, data) {
+        eventConfig.mouseColliderID = data.id;
+        this.runCommand(eventConfig, {
+            x: data.x,
+            y: data.y,
+            button: data.button ? data.button : 0,
         });
-  }
+    }
 };

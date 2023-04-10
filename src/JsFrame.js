@@ -3,6 +3,7 @@ const { loadImage } = require("canvas");
 const test = require("canvas");
 const fs = require("fs");
 const MouseCollider = require("./modules/mouseCollider");
+const { on } = require("events");
 module.exports = class JSFrame {
     /**
      *
@@ -48,7 +49,7 @@ module.exports = class JSFrame {
         /**
          *
          * @typedef EventData
-         * 
+         *
          * @property {...Object} [data]
          * @property {Object} eventConfig
          * @property {string} eventConfig.type
@@ -68,6 +69,15 @@ module.exports = class JSFrame {
          */
         this.on = (event, callBack) => {
             server.EventManager.addListener("frame", event, callBack);
+        };
+
+        /**
+         * Exists when closed
+         */
+        this.exitOnClose = () => {
+            this.on("closed", () => {
+                process.exit(0);
+            });
         };
 
         this.update = () => {
