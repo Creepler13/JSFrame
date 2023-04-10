@@ -28,7 +28,7 @@ module.exports = class FrameEventHandler {
                         eventCallsReceived: this.server.EventManager.eventCallsReceived,
                     });
                 return;
-            case "positionChanged": {
+            case "positionChanged":
                 let x = parseInt(data.x);
                 let y = parseInt(data.y);
 
@@ -38,7 +38,15 @@ module.exports = class FrameEventHandler {
                 if (this.Events[eventConfig.name]) {
                     this.Events[eventConfig.name]({ x, y, eventConfig });
                 }
-            }
+
+                break;
+            case "up":
+                this.server.lastUpdateEnd = process.uptime();
+                if (this.Events[eventConfig.name]) {
+                    let tooktime = this.server.lastUpdateEnd - this.server.lastUpdateStart;
+                    this.Events[eventConfig.name]({ tooktime, eventConfig });
+                }
+                return;
         }
 
         if (this.Events[eventConfig.name]) {

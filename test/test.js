@@ -8,7 +8,7 @@ let MC;
 
 let ctx = frame.getCanvas().getContext("2d");
 ctx.fillStyle = "white";
-ctx.fillRect(0, 0, 500, 500);
+ctx.fillRect(0, 0, 1000, 1000);
 
 frame.on("minimized", () => {
   console.log("minimized");
@@ -70,6 +70,10 @@ frame.on("keyReleased", (e) => {
 frame.on("debug", (e) => {
  //console.log(e);
 });
+
+frame.on("up",e=>{
+console.log(e.tooktime);
+})
 
 frame.on("closed", (e) => {
   console.log(e);

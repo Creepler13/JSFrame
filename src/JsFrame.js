@@ -47,8 +47,24 @@ module.exports = class JSFrame {
 
         /**
          *
+         * @typedef EventData
+         * 
+         * @property {...Object} [data]
+         * @property {Object} eventConfig
+         * @property {string} eventConfig.type
+         * @property {string} eventConfig.name
+         */
+
+        /**
+         *
+         * @callback EventCallback
+         * @param{EventData} eventData
+         */
+
+        /**
+         *
          * @param {"ready"|"closed"|"update"|"minimized"|"normalized"|"positionChanged"|"keyPressed"|"keyReleased"|"mousePressed"|"mouseReleased"|"mouseExited"|"mouseEntered"|"mouseMoved"|"mouseDragged"} event
-         * @param {*} callBack
+         * @param {EventCallback} callBack
          */
         this.on = (event, callBack) => {
             server.EventManager.addListener("frame", event, callBack);

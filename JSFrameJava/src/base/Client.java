@@ -90,6 +90,7 @@ public class Client {
 				g2d.drawImage(image, 0, 0, width, heigth, 0, 0, width, heigth, null);
 			}
 			window.JBC.setBackground(background);
+			eventHandler.makeEventCall("frame", "up");
 
 		} else {
 			messageRecieved(this.buffer);
