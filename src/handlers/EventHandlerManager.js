@@ -4,6 +4,7 @@ const FrameEventHandler = require("./FrameEventHandler");
 const MouseColliderEventHandler = require("./MouseColliderEventHandler");
 const Server = require("../Server");
 const EventHandlerInterface = require("./EventHandlerInterFace");
+const DebugEventHandler = require("./DebugEventHandler");
 
 module.exports = class EventHandlerManager  {
     handlers = {};
@@ -18,6 +19,7 @@ module.exports = class EventHandlerManager  {
         this.server = server;
         this.handlers.frame = new FrameEventHandler(server);
         this.handlers.mouseCollider = new MouseColliderEventHandler(server);
+        this.handlers.debug=new DebugEventHandler(server);
     }
 
     /**

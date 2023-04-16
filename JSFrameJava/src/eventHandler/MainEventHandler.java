@@ -51,12 +51,13 @@ public class MainEventHandler {
 		}
 		event = event + "}";
 
-		c.write(event);
+		c.msgClient.write(event);
 	}
 
 	public void handle(String event, String fulldata[]) {
 		switch (event) {
-
+		case "pipeReady":
+			c.ConnectPipe(fulldata[1]);
 		case "close":
 			c.window.frame.dispatchEvent(new WindowEvent(c.window.frame, WindowEvent.WINDOW_CLOSING));
 			break;
@@ -90,6 +91,10 @@ public class MainEventHandler {
 			c.background = null;
 			break;
 		}
+	}
+
+	public enum EventType {
+		FRAME
 	}
 
 }

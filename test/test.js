@@ -16,9 +16,9 @@ frame.on("minimized", () => {
     console.log("minimized");
 });
 
-frame.on("event",e=>{
-    console.log(e);
-})
+frame.on("event", (e) => {
+  //  console.log(e);
+});
 
 frame.on("ready", () => {
     MC = frame.createMouseCollider(50, 50, 200, 200);
@@ -74,11 +74,11 @@ frame.on("keyReleased", (e) => {
 });
 
 frame.on("debug", (e) => {
-    //console.log(e);
+    //  console.log(e);
 });
 
 frame.on("up", (e) => {
-   // console.log(e.tooktime);
+    // console.log(e.tooktime);
 });
 
 frame.on("closed", (e) => {

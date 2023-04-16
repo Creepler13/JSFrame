@@ -10,8 +10,30 @@ public class Main {
 					Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]),
 					Boolean.parseBoolean(args[6]));
 
-			while (true) {
-				client.update();
+			try {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						while (true) {
+							client.msgClient.sendMessageBuffer();
+							client.msgClient.readMessageBuffer();
+							try {
+								Thread.sleep(20);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}).start();
+
+				
+				while(true) {
+				if(client.pipeConnected)	
+					client.update();
+				}
+		
+				
+			} catch (Exception e) {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

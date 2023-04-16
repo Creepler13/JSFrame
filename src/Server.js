@@ -1,9 +1,10 @@
 const { spawn } = require("child_process");
 let config = require("./config.json");
 const dgram = require("dgram");
+const path = require("path");
 const { createCanvas } = require("canvas");
+const net = require("node:net");
 const EventHandlerManager = require("./handlers/EventHandlerManager");
-const { Console } = require("console");
 
 module.exports = class Server {
     /**
@@ -15,6 +16,7 @@ module.exports = class Server {
      * @param {Boolean} hideOnReady
      */
     constructor(x, y, width, height, hideOnReady) {
+        this.hideOnReady = hideOnReady;
         this.width = width ? width : 500;
         this.height = height ? height : 500;
         this.x = x ? x : 0;
@@ -32,65 +34,98 @@ module.exports = class Server {
         this.lastUpdateStart = 0;
         this.lastUpdateEnd = 0;
 
-        this.socket = dgram.createSocket("udp4");
+        this.frameUpdateTime = process.uptime();
+        this.fps = 15;
+        this.frameUpdateDone = true;
 
         this.EventManager = new EventHandlerManager(this);
 
         this.EventManager.addListener("frame", "up", (e) => {
-            console.log(e);
-            this.update(this);
+            this.frameUpdateDone = true;
         });
 
         this.EventManager.addListener("frame", "ready", (e) => {
             console.log(e);
-            this.update(this);
+
+            this.serverClock();
         });
 
-        this.socket.on("listening", () => {
-            this.ls = spawn("java", [
-                "-jar",
-                __dirname + "/JSFrame.jar",
-                this.socket.address().port,
-                this.bufferSize,
-                this.x,
-                this.y,
-                this.width,
-                this.height,
-                hideOnReady ? "True" : "False",
-            ]);
+        this.createMsgServer();
+    }
 
-            this.ls.stdout.on("data", (data) => {
-                console.log("Frame log:" + data);
-            });
+    createMsgServer() {
+        this.msgServerPort = 3333;
 
-            this.ls.stderr.on("data", (data) => {
-                console.error("" + data);
-            });
-
-            this.ls.on("error", (error) => {
-                console.error("" + error);
-            });
-        });
-
-        this.socket.on("message", (msg, rinfo) => {
-           if (rinfo.port != this.socket.address().port)
+        net.createServer((e) => {
+            this.socket = e;
+            this.socket.on("data", (msg) => {
+                console.log("Msg From Frame: " + msg + "");
                 (msg + "").split("%").forEach((message) => {
                     let jso = JSON.parse(message);
-
                     this.EventManager.eventCall(jso.config, jso.data);
                 });
-        });
+            });
+            console.log("socket Connected");
+            this.writePreReadyBuffer();
+            this.createIPCServer();
+        }).listen(this.msgServerPort);
 
-        this.socket.on("connect", () => {
-            //     this.interval = setInterval(() => {
-            //       this.update(this);
-            //  }, 16);
+        this.startFrame();
+    }
+
+    createIPCServer() {
+        let pipePath = "//./pipe/imgPipe";
+        net.createServer((e) => {
+            this.ipcPipe = e;
+            console.log("pipe Connected");
+            //both serversConnected
             this.EventManager.eventCall({ type: "frame", name: "ready" });
             this.ready = true;
-            this.writePreReadyBuffer();
+        }).listen(pipePath);
+
+        this.write(["pipeReady", pipePath]);
+    }
+
+    startFrame() {
+        this.ls = spawn("java", [
+            "-jar",
+            __dirname + "/JSFrame.jar",
+            this.msgServerPort, //this.socket.address().port,
+            this.bufferSize,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.hideOnReady ? "True" : "False",
+        ]);
+
+
+        this.ls.stdout.on("data", (data) => {
+            console.log("Frame log:" + data);
         });
 
-        this.socket.bind();
+        this.ls.stderr.on("data", (data) => {
+            console.error("" + data);
+        });
+
+        this.ls.on("error", (error) => {
+            console.error("" + error);
+        });
+    }
+
+    async serverClock() {
+        while (true) {
+            let currTime = process.uptime();
+            if (this.frameUpdateDone) console.log(currTime - this.frameUpdateTime);
+            if (
+                (this.frameUpdateDone && currTime - this.frameUpdateTime > 1 / this.fps) ||
+                currTime - this.frameUpdateTime > 1
+            ) {
+                this.frameUpdateTime = currTime;
+                this.frameUpdateDone = false;
+                this.update(this);
+            }
+        }
     }
 
     update(server) {
@@ -137,7 +172,9 @@ module.exports = class Server {
     }
 
     writeImg(buffer) {
-        this.socket.send(Buffer.concat([Buffer.from([0]), buffer]), this.port);
+        this.ipcPipe.write("TEst\n");
+        // this.ipcPipe.write(Buffer.concat([Buffer.from([0]), buffer]) + "\n");
+        //   this.socket.send(Buffer.concat([Buffer.from([0]), buffer]), this.port);
     }
 
     writePreReadyBuffer() {
@@ -147,11 +184,14 @@ module.exports = class Server {
     }
 
     write(msg) {
-        if (this.ready) {
-            this.socket.send(
+        if (this.socket) {
+            this.socket.write(msg.join(",") + "\n");
+
+            /*    this.socket.send(
                 Buffer.concat([Buffer.from([1]), Buffer.from(msg.join(",")), Buffer.from(";")]),
                 this.port
             );
+        */
         } else {
             this.preReadyBuffer.push(msg);
         }
