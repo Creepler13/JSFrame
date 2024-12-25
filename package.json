@@ -6,7 +6,7 @@
     "author": "Creepler13",
     "license": "ISC",
     "dependencies": {
-        "canvas": "^2.11.2",
+        "canvas": "^3.0.0",
         "child_process": "^1.0.2",
         "fs": "*"
     },
